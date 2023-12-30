@@ -5,8 +5,9 @@
 export const getNetworkInterfaceName = () => {
   const f = {
     win32: 'WLAN',
-    linux: 'eth0',
-    darwin: 'en0',
+    linux: 'eth',
+    darwin: 'en',
   };
+
   return f[process.platform];
 };

@@ -32,11 +32,11 @@ async function bootstrap() {
   // This can only return an IPv4 address
   const ipv4 = ip(getNetworkInterfaceName());
 
-  consola.box('🦀 Application running on:');
+  consola.start('🦀 应用程序运行在:');
   consola.success(`http://localhost:${application.port}`);
   consola.success(`http://${ipv4}:${application.port}\n`);
 
-  consola.start('📖 Application swagger docs running on:');
+  consola.start('📖 应用程序 swagger 文档运行在:');
   consola.success(`http://localhost:${application.port}/docs`);
   consola.success(`http://${ipv4}:${application.port}/docs`);
 }

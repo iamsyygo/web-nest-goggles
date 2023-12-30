@@ -1,0 +1,20 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "/Volumes/aoe/web-design/meta/web-nest-crab/logs/winston/.5966416bdb252cc85fb72b1dd2056a39a430ceae-audit.json",
+    "files": [
+        {
+            "date": 1703951769797,
+            "name": "/Volumes/aoe/web-design/meta/web-nest-crab/logs/winston/2023-12-30.reject.log",
+            "hash": "f7e2cbf6b8a315ee6e1fa577b2a89907ea5b1c60c38be1b3c8c40f043e0e7846"
+        },
+        {
+            "date": 1703952278821,
+            "name": "/Volumes/aoe/web-design/meta/web-nest-crab/logs/winston/2023-12-31.reject.log",
+            "hash": "56f9c55294d8da2bafe9f63aed92014cb9598a88eaa5d70a2a398c90a26ae9ce"
+        }
+    ],
+    "hashType": "sha256"
+}
