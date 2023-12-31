@@ -13,6 +13,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { AppExceptionFilter } from '@/filter/exception.filter';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { AppResponseInterceptor } from '@/interceptor/response.interceptor';
+import { UserModule } from './main/user/user.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { AppResponseInterceptor } from '@/interceptor/response.interceptor';
       useFactory: typeOrmUseFactory,
     }),
     ScheduleModule.forRoot(),
+    UserModule,
   ],
   controllers: [AppController],
   providers: [

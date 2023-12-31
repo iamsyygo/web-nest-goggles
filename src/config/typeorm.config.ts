@@ -6,11 +6,7 @@ export const typeOrmUseFactory = (configService: ConfigService): TypeOrmModuleOp
   const typeOrmConfig = configService.get('db.mysql') as AppYamlConfig['db']['mysql'] as TypeOrmModuleOptions;
   return {
     ...typeOrmConfig,
-
     // 驼峰转下划线
     namingStrategy: new SnakeNamingStrategy(),
-
-    // 日期类型转换
-    // dateStrings: true,
   };
 };
