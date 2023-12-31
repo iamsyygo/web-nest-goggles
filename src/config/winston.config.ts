@@ -13,10 +13,25 @@ export const winstonUseFactory = (configService: ConfigService): WinstonModuleOp
   return {
     // format: winston.format.label(),
     transports: [
-      new winston.transports.Console(),
+      new winston.transports.Console({
+        level,
+        format: winston.format.combine(
+          // winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+          winston.format.printf((info) => {
+            return info.message;
+          }),
+        ),
+      }),
       new winston.transports.DailyRotateFile({
+        format: winston.format.combine(
+          winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+          winston.format.printf(({ level, timestamp, stack, message }) => {
+            if (!stack) return message;
+            return JSON.stringify({ level, timestamp, stack });
+          }),
+        ),
         dirname: dir,
-        filename: filename + 'info.log',
+        filename: filename + '.info.log',
         datePattern,
         ...rest,
       }),

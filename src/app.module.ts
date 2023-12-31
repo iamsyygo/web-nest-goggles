@@ -11,7 +11,8 @@ import { redisUseFactory } from '@/config/redis.config';
 import { AppEnum } from '@/types/enum';
 import { ScheduleModule } from '@nestjs/schedule';
 import { AppExceptionFilter } from '@/filter/exception.filter';
-import { APP_FILTER } from '@nestjs/core';
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
+import { AppResponseInterceptor } from '@/interceptor/response.interceptor';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { APP_FILTER } from '@nestjs/core';
     //   useFactory: redisUseFactory,
     // },
     { provide: APP_FILTER, useClass: AppExceptionFilter },
+    { provide: APP_INTERCEPTOR, useClass: AppResponseInterceptor },
   ],
 })
 export class AppModule {}

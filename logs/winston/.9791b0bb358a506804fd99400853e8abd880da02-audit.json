@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "/Volumes/aoe/web-design/meta/web-nest-crab/logs/winston/.9791b0bb358a506804fd99400853e8abd880da02-audit.json",
+    "files": [
+        {
+            "date": 1704027086546,
+            "name": "/Volumes/aoe/web-design/meta/web-nest-crab/logs/winston/2023-12-31.info.log",
+            "hash": "fa5e744044df047bbabadd70d2f3d60778f1725b6bb72131029f3361522af8ae"
+        }
+    ],
+    "hashType": "sha256"
+}
