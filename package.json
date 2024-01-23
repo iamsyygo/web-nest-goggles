@@ -1,8 +1,8 @@
 {
-  "name": "web-nest-crab",
+  "name": "web-nest-goggles",
   "version": "0.0.1",
-  "description": "crab is 🦀",
-  "author": "",
+  "description": "back-office services built with nestjs.",
+  "author": "iamsyygo",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
