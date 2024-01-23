@@ -28,7 +28,7 @@ export class UserService {
     });
     if (!!notEmpty) throw new BadRequestException('用户名已存在');
 
-    const salt = this.configService.get('bcrypt.salt');
+    const salt = this.configService.get('bcrypt.salt', 10);
     const password = await hashSync(createUserDto.password, salt);
     const user = await this.userRepo.save({
       ...createUserDto,
@@ -52,7 +52,6 @@ export class UserService {
     const token = await this.jwtService.signAsync({ id: user.id, username: user.username });
     const authorization = 'Bearer ' + token;
 
-    // user.lastLoginDate = new Date();
     user.lastLoginIp = req.headers.host.split(':')[0];
     const u = await this.userRepo.save(user);
 

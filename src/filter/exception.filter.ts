@@ -1,5 +1,12 @@
 import { parseErrorMessage } from '@/utils';
-import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common';
+import {
+  ArgumentsHost,
+  BadRequestException,
+  Catch,
+  ExceptionFilter,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { Inject } from '@nestjs/common/decorators';
 import * as chalk from 'chalk';
 import * as dayjs from 'dayjs';
@@ -39,18 +46,26 @@ export class AppExceptionFilter implements ExceptionFilter {
       const method = location.method ? chalk.yellowBright(`[${location.method}] `) : '';
       const msg = message ? chalk.redBright(`${message} `) : '';
       const stackPath = location.filePath
-        ? chalk.redBright(`\nat ${location.filePath}:${location.position}`)
+        ? chalk.redBright(`\n error at ${location.filePath}:${location.position}`)
         : '';
       const log = prefix + dayjs().format('YYYY-MM-DD HH:mm:ss') + ' ' + t + method + msg + stackPath;
       this.logger.log('error', log, { stack: exception.stack });
     }
 
-    response.status(status).json({
+    const result = {
       success: false,
       timestamp: +new Date(),
       code: status,
-      error: exception.message || 'Unknown Error',
       uri: request.url,
-    });
+      error: exception.message || 'Unknown Error',
+    };
+
+    if (exception instanceof BadRequestException) {
+      const response = exception.getResponse?.();
+      result.error = response?.['error'] || exception.message;
+      // @ts-expect-error
+      result.message = Array.isArray(response?.message) ? response.message.join('; ') : response?.message;
+    }
+    response.status(status).json(result);
   }
 }
