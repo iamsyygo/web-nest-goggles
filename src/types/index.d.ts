@@ -34,6 +34,17 @@ type AppYamlConfig = {
     };
   };
 
+  bcrypt: {
+    salt: string;
+  };
+
+  jwt: {
+    secret: string;
+    signOptions: {
+      expiresIn: string;
+    };
+  };
+
   logs: {
     winston: {
       dirname: string;

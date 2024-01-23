@@ -6,7 +6,7 @@ import { consola } from 'consola';
 import { ip } from 'address';
 import { getNetworkInterfaceName } from '@/utils';
 import { setupSwagger } from '@/config/swagger.config';
-import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+// import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
@@ -32,13 +32,13 @@ async function bootstrap() {
   const ipv4 = ip(getNetworkInterfaceName());
 
   consola.ready({
-    message: `🦀 应用程序启动成功，运行在:`,
+    message: `🥽 应用程序启动成功，运行在:`,
     badge: true,
   });
   consola.success(`http://localhost:${application.port}`);
   consola.success(`http://${ipv4}:${application.port}\n`);
 
-  consola.start('📖 应用程序 swagger 文档运行在:');
+  consola.start('📖 swagger 文档运行在:');
   consola.success(`http://localhost:${application.port}/docs`);
   consola.success(`http://${ipv4}:${application.port}/docs`);
   consola.info(`⏱️  启动耗时${Date.now() - now}ms`);

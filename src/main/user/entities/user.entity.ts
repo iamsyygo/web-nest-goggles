@@ -1,5 +1,6 @@
-import { DataEnumSex, DataEnumStatus } from '@/types/enum';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { DataSexEnum, DataStatusEnum } from '@/types/enum';
+import { hashSync } from 'bcryptjs';
+import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
@@ -11,11 +12,11 @@ export class User {
     comment: '注册时间',
     update: false,
   })
-  registrationDate: Date;
+  createDate: Date;
 
   @Column({
     type: 'timestamp',
-    comment: '更新时间',
+    comment: '修改时间',
     onUpdate: 'CURRENT_TIMESTAMP',
     nullable: true,
     transformer: { from: (value: Date) => value, to: () => new Date() },
@@ -25,11 +26,19 @@ export class User {
   @Column({
     type: 'enum',
     comment: '状态',
-    default: DataEnumStatus.ENABLE,
-    enum: DataEnumStatus,
+    default: DataStatusEnum.ENABLE,
+    enum: DataStatusEnum,
     select: false,
   })
-  status: DataEnumStatus;
+  status: DataStatusEnum;
+
+  @Column({
+    type: 'enum',
+    default: DataSexEnum.UNKNOWN,
+    enum: DataSexEnum,
+    comment: '性别',
+  })
+  gender: DataSexEnum;
 
   @Column({
     type: 'varchar',
@@ -45,10 +54,18 @@ export class User {
   })
   password: string;
 
+  // fix: unable to read configuration file
+  // @BeforeInsert()
+  // async encryptPassword() {
+  //   if (!this.password) throw new Error('密码是空的');
+  //   this.password = await hashSync(this.password, YAML_DATA.bcrypt.salt);
+  // }
+
   @Column({
     type: 'varchar',
     length: 30,
     comment: '邮箱',
+    nullable: true,
   })
   email: string;
 
@@ -56,20 +73,15 @@ export class User {
     type: 'varchar',
     length: 30,
     comment: '手机号码',
+    nullable: true,
   })
   phoneNumber: string;
 
   @Column({
     type: 'varchar',
     length: 30,
-    comment: '姓名',
-  })
-  fullName: string;
-
-  @Column({
-    type: 'varchar',
-    length: 30,
     comment: '简介',
+    nullable: true,
   })
   bio: string;
 
@@ -77,6 +89,7 @@ export class User {
     type: 'varchar',
     length: 30,
     comment: '头像',
+    nullable: true,
   })
   avatar: string;
 
@@ -84,34 +97,15 @@ export class User {
     type: 'varchar',
     length: 50,
     comment: '社交链接',
+    nullable: true,
   })
   socialLinks: string;
 
   @Column({
     type: 'varchar',
     length: 30,
-    comment: '性别',
-  })
-  gender: any;
-
-  //   @Column({
-  //     type: 'varchar',
-  //     length: 30,
-  //     comment: '用户类型',
-  //   })
-  //   userType: any;
-
-  //   @Column({
-  //     type: 'varchar',
-  //     length: 30,
-  //     comment: '账号状态',
-  //   })
-  //   accountStatus: any;
-
-  @Column({
-    type: 'varchar',
-    length: 30,
     comment: '最后登录IP',
+    nullable: true,
   })
   lastLoginIp: string;
 

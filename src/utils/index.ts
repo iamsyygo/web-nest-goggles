@@ -1,5 +1,3 @@
-import * as chalk from 'chalk';
-
 /**
  * 获取系统网卡名称
  * @returns {string}
@@ -39,19 +37,3 @@ export const parseErrorMessage = (errorMessage: string) => {
   }
   return null;
 };
-
-/**
- * 颜色化日志信息
- * @param type 日志类型
- * @param message 日志信息
- * @returns
- */
-export function colorizeLogMessage(type, message) {
-  const typeMap = {
-    info: 'green',
-    error: 'red',
-    warning: 'yellow',
-    debug: 'blue',
-  };
-  return chalk[typeMap[type]]?.(message) || message;
-}

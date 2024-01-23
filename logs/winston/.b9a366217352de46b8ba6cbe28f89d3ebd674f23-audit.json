@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "D:\\web-design\\meta\\web-nest-goggles\\logs\\winston\\.b9a366217352de46b8ba6cbe28f89d3ebd674f23-audit.json",
+    "files": [
+        {
+            "date": 1705991384689,
+            "name": "D:\\web-design\\meta\\web-nest-goggles\\logs\\winston\\2024-01-23.reject.log",
+            "hash": "e8c7c4e15d7fb5480945023380714fc2923f93e888f2d13fe76845b351423e54"
+        }
+    ],
+    "hashType": "sha256"
+}

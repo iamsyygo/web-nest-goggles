@@ -4,7 +4,7 @@ export enum AppEnum {
 }
 
 // field status
-export enum DataEnumStatus {
+export enum DataStatusEnum {
   // 未启用
   UNENABLE = 2,
   ENABLE = 1,
@@ -12,7 +12,7 @@ export enum DataEnumStatus {
 }
 
 // sex 性别
-export enum DataEnumSex {
+export enum DataSexEnum {
   MAN = 1,
   FEMALE = 2,
   UNKNOWN = 3,
