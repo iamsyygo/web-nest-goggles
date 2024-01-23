@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "/Volumes/aoe/web-design/meta/web-nest-goggles/logs/winston/.34a4cef7c72861fffe4c97d6bd8c55f00b319268-audit.json",
+    "files": [
+        {
+            "date": 1706014116411,
+            "name": "/Volumes/aoe/web-design/meta/web-nest-goggles/logs/winston/2024-01-23.exception.log",
+            "hash": "0fe0967eee8312d5fc9fe5371cd3a742ae3e5b2564e6834ce5eaeec811fd9b1a"
+        }
+    ],
+    "hashType": "sha256"
+}
