@@ -11,9 +11,10 @@ import { redisUseFactory } from '@/config/redis.config';
 import { AppEnum } from '@/types/enum';
 import { ScheduleModule } from '@nestjs/schedule';
 import { AppExceptionFilter } from '@/filter/exception.filter';
-import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { AppResponseInterceptor } from '@/interceptor/response.interceptor';
 import { UserModule } from './main/user/user.module';
+import { AppJwtAuthGuard } from './guard/jwt-passport.guard';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { UserModule } from './main/user/user.module';
     //   provide: AppEnum.REDIS,
     //   useFactory: redisUseFactory,
     // },
+    { provide: APP_GUARD, useClass: AppJwtAuthGuard },
     { provide: APP_FILTER, useClass: AppExceptionFilter },
     { provide: APP_INTERCEPTOR, useClass: AppResponseInterceptor },
   ],

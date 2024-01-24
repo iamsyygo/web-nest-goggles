@@ -30,13 +30,13 @@ export class UserService {
 
     const salt = this.configService.get('bcrypt.salt', 10);
     const password = await hashSync(createUserDto.password, salt);
-    const user = await this.userRepo.save({
+    const user = await this.userRepo.insert({
       ...createUserDto,
       password,
     });
 
-    delete user.password;
-    return user;
+    if (user.identifiers.length === 0) throw new BadRequestException('创建失败');
+    return true;
   }
 
   async login(loginUserDto: CreateUserDto, req: Request) {
