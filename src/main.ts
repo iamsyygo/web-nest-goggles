@@ -9,6 +9,8 @@ import { setupSwagger } from '@/config/swagger.config';
 // import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { ValidationPipe } from '@nestjs/common';
 
+declare const module: any;
+
 async function bootstrap() {
   const now = Date.now();
   const app = await NestFactory.create(AppModule);
@@ -27,6 +29,11 @@ async function bootstrap() {
   );
 
   await app.listen(application.port);
+
+  if (module.hot) {
+    module.hot.accept();
+    module.hot.dispose(() => app.close());
+  }
 
   // This can only return an IPv4 address
   const ipv4 = ip(getNetworkInterfaceName());

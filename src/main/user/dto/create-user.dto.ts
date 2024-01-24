@@ -1,7 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Matches, MaxLength, MinLength } from 'class-validator';
+import { IsNotEmpty, Matches, MaxLength, MinLength } from 'class-validator';
+import {} from '@nestjs/mapped-types';
 
 export class CreateUserDto {
+  // @IsNotEmpty()
   @MinLength(8, { message: '用户名长度不能小于8位' })
   @MaxLength(20, { message: '用户名长度不能大于20位' })
   @ApiProperty({ description: '用户名', example: 'admin' })

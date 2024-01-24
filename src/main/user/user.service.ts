@@ -9,6 +9,7 @@ import { compare, hashSync } from 'bcryptjs';
 import { Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import dayjs from 'dayjs';
+import { PageQueryDto } from './dto/query-user.dto';
 
 @Injectable()
 export class UserService {
@@ -62,14 +63,27 @@ export class UserService {
     };
   }
 
+  async findList({ page = 1, pageSize = 10 }: PageQueryDto) {
+    const [list, total] = await this.userRepo.findAndCount({
+      skip: page * pageSize,
+      take: pageSize,
+    });
+    return {
+      list,
+      total,
+      meta: {
+        page: +page,
+        pageSize: +pageSize,
+        totalSize: Math.ceil(total / pageSize),
+      },
+    };
+  }
   findAll() {
     return `This action returns all user`;
   }
-
   findOne(id: number) {
     return `This action returns a #${id} user`;
   }
-
   update(id: number, updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} user`;
   }
