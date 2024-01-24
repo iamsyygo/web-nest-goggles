@@ -10,7 +10,7 @@
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "cross-env NODE_ENV=development nest start --watch",
-    "start:hmr": "nest build --webpack --webpackPath webpack.config.js --watch",
+    "dev": "cross-env NODE_ENV=development nest build --webpack --webpackPath webpack.config.js --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "cross-env NODE_ENV=production node dist/main",
     "compodoc:npx": "npx @compodoc/compodoc -p tsconfig.json -s",
