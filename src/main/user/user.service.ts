@@ -10,6 +10,8 @@ import { Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import dayjs from 'dayjs';
 import { PageQueryDto } from './dto/query-user.dto';
+import { DataStatusEnum } from '@/types/enum';
+import { getSelect } from '@/utils';
 
 @Injectable()
 export class UserService {
@@ -67,6 +69,7 @@ export class UserService {
     const [list, total] = await this.userRepo.findAndCount({
       skip: page * pageSize,
       take: pageSize,
+      withDeleted: true,
     });
     return {
       list,
@@ -82,13 +85,30 @@ export class UserService {
     return `This action returns all user`;
   }
   findOne(id: number) {
-    return `This action returns a #${id} user`;
+    // console.log(`this.userRepo`, this.userRepo.metadata.ownColumns);
+
+    return this.userRepo.findOne({
+      where: { id },
+      // select: getSelect(User, ['!prototype']),
+      select: {
+        password: false,
+        ...this.userRepo.metadata.ownColumns.reduce((prev, cur) => {
+          prev[cur.propertyName] = true;
+          return prev;
+        }, {}),
+      },
+    });
   }
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    const result = await this.userRepo.update(id, updateUserDto);
+    if (result.affected === 0) throw new BadRequestException('更新失败');
+    return true;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: number) {
+    const user = await this.userRepo.findOne({ where: { id } });
+    if (!user) throw new BadRequestException('用户不存在');
+    const result = await this.userRepo.softRemove({ ...user });
+    return !!result;
   }
 }

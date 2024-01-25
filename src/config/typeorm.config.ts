@@ -10,6 +10,5 @@ export const typeOrmUseFactory = (configService: ConfigService): TypeOrmModuleOp
     ...typeOrmConfig,
     // 驼峰转下划线
     namingStrategy: new SnakeNamingStrategy(),
-    keepConnectionAlive: true,
   };
 };
