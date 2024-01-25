@@ -42,8 +42,8 @@ async function bootstrap() {
     message: `🥽 应用程序启动成功，运行在:`,
     badge: true,
   });
-  consola.success(`http://localhost:${application.port}`);
-  consola.success(`http://${ipv4}:${application.port}\n`);
+  consola.success(`<🏄/> http://localhost:${application.port}`);
+  consola.success(`<🏄/> http://${ipv4}:${application.port}\n`);
 
   consola.start('📖 swagger 文档运行在:');
   consola.success(`http://localhost:${application.port}/docs`);
