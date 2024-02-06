@@ -1,7 +1,5 @@
 <div align="center" style="display:flex;align-items:center;justify-content:space-around">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-  <div align="center" style="font-size:150px">🥽
-  </div>
 </div>
 
 [circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
