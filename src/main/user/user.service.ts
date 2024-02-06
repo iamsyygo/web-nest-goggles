@@ -8,10 +8,7 @@ import { ConfigService } from '@nestjs/config';
 import { compare, hashSync } from 'bcryptjs';
 import { Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
-import dayjs from 'dayjs';
 import { PageQueryDto } from './dto/query-user.dto';
-import { DataStatusEnum } from '@/types/enum';
-import { getSelect } from '@/utils';
 
 @Injectable()
 export class UserService {
@@ -55,6 +52,7 @@ export class UserService {
     const token = await this.jwtService.signAsync({ id: user.id, username: user.username });
     const authorization = 'Bearer ' + token;
 
+    // @ts-ignore
     user.lastLoginIp = req.headers.host.split(':')[0];
     const u = await this.userRepo.save(user);
 
