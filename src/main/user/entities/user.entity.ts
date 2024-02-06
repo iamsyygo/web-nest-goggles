@@ -1,4 +1,4 @@
-import { DataSexEnum, DataStatusEnum } from '@/types/enum';
+import { DataSexEnum, DataStatusEnum } from '../../../types/enum';
 import { hashSync } from 'bcryptjs';
 import { BeforeInsert, Column, DeleteDateColumn, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
 

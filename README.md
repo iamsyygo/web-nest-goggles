@@ -83,6 +83,9 @@ $ pnpm run test:cov
 客户端连接时记得开启 SSL
 也可以是 [planetscale](https://auth.planetscale.com/sign-up)
 
+一些 bug 解决方案：
+- [vercel 路径问题](https://github.com/orgs/vercel/discussions/2323)
+
 ## 支持
 
 Nest 是一个 MIT 许可的开源项目。它能够因为赞助商和出色的支持者而发展。如果你想加入他们，请[在此阅读更多](https://docs.nestjs.com/support).

@@ -4,8 +4,8 @@ import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { consola } from 'consola';
 import { ip } from 'address';
-import { getNetworkInterfaceName } from '@/utils';
-import { setupSwagger } from '@/config/swagger.config';
+import { getNetworkInterfaceName } from './utils';
+import { setupSwagger } from './config/swagger.config';
 // import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { ValidationPipe } from '@nestjs/common';
 

@@ -15,7 +15,7 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserService } from './user.service';
-import { SkipJwtPassport } from '@/decorator/skip-jwt-passport.decorator';
+import { SkipJwtPassport } from '../../decorator/skip-jwt-passport.decorator';
 import { PageQueryDto } from './dto/query-user.dto';
 
 @ApiTags('系统用户')
