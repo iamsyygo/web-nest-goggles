@@ -6,29 +6,9 @@
     "auditLog": "D:\\web-design\\meta\\web-nest-goggles\\logs\\winston\\.f232c2bac2e4077ab74ff93260a8c589f8201ed0-audit.json",
     "files": [
         {
-            "date": 1705991384687,
-            "name": "D:\\web-design\\meta\\web-nest-goggles\\logs\\winston\\2024-01-23.exception.log",
-            "hash": "035074cab3800d4d1e3a7c4d2a3e6bbbcc0047a1cd124b7a2c6717cfb39a04f6"
-        },
-        {
-            "date": 1706064315292,
-            "name": "D:\\web-design\\meta\\web-nest-goggles\\logs\\winston\\2024-01-24.exception.log",
-            "hash": "a6a5d39fc00f15bd74766edeae8ea892d0ef3648a197d62536edd91d535a8317"
-        },
-        {
-            "date": 1706154515608,
-            "name": "D:\\web-design\\meta\\web-nest-goggles\\logs\\winston\\2024-01-25.exception.log",
-            "hash": "af9c0a17f4c28119ec4b7395e5e46c417b58732ec98949b4f772b44d850c3cf0"
-        },
-        {
-            "date": 1706234346281,
-            "name": "D:\\web-design\\meta\\web-nest-goggles\\logs\\winston\\2024-01-26.exception.log",
-            "hash": "12649b6e2489d4862e879293b771330ab8664ddd5d86f1877498944129bc0781"
-        },
-        {
-            "date": 1707115316172,
-            "name": "D:\\web-design\\meta\\web-nest-goggles\\logs\\winston\\2024-02-05.exception.log",
-            "hash": "e1e862fe78eb92797b36e5f393fb889aef19c06705bb40f4410b6236336cabc6"
+            "date": 1709019209614,
+            "name": "D:\\web-design\\meta\\web-nest-goggles\\logs\\winston\\2024-02-27.exception.log",
+            "hash": "895e16f32a9efb6a2275f70c556e83bc59fbfd381800a91e82dab4ea7e79040b"
         }
     ],
     "hashType": "sha256"

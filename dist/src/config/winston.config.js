@@ -5,6 +5,8 @@ const winston = require("winston");
 require("winston-daily-rotate-file");
 const path = require("path");
 const winstonUseFactory = (configService) => {
+    if (process.env.NODE_ENV !== 'development')
+        return {};
     const winstonWonfig = configService.get('logs.winston');
     const { dirname, filename, datePattern, level, ...rest } = winstonWonfig;
     const pwd = process.cwd();

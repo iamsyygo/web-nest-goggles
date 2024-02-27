@@ -38,3 +38,5 @@ lerna-debug.log*
 .vercel
 env.development.yaml
 env.production.yaml
+.env.development.local
+.env*.local

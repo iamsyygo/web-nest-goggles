@@ -1,6 +1,15 @@
 import { DataSexEnum, DataStatusEnum } from '../../../types/enum';
-import { hashSync } from 'bcryptjs';
-import { BeforeInsert, Column, DeleteDateColumn, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BeforeInsert,
+  Column,
+  DeleteDateColumn,
+  Entity,
+  Index,
+  JoinTable,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Role } from '../../role/entities/role.entity';
 
 // 示例：
 // https://juejin.cn/post/7100159206132547621?searchId=20240125143117C746E8C1354801836F0E#heading-5
@@ -42,7 +51,7 @@ export class User {
     comment: '删除时间',
     nullable: true,
     default: null,
-    transformer: { from: (value: Date) => value, to: () => new Date() },
+    // transformer: { from: (value: Date) => value, to: () => new Date() },
   })
   deleteDate: Date;
 
@@ -132,4 +141,10 @@ export class User {
     comment: '最后登录时间',
   })
   lastLoginDate: Date;
+
+  @ManyToMany(() => Role)
+  @JoinTable({
+    name: 'user_role_relation',
+  })
+  roles: Role[];
 }

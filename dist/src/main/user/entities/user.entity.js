@@ -13,9 +13,10 @@ exports.User = void 0;
 const openapi = require("@nestjs/swagger");
 const enum_1 = require("../../../types/enum");
 const typeorm_1 = require("typeorm");
+const role_entity_1 = require("../../role/entities/role.entity");
 let User = class User {
     static _OPENAPI_METADATA_FACTORY() {
-        return { id: { required: true, type: () => Number }, createDate: { required: true, type: () => Date }, updateDate: { required: true, type: () => Date }, status: { required: true, enum: require("../../../types/enum").DataStatusEnum }, deleteDate: { required: true, type: () => Date }, gender: { required: true, enum: require("../../../types/enum").DataSexEnum }, username: { required: true, type: () => String }, password: { required: true, type: () => String }, email: { required: true, type: () => String }, phoneNumber: { required: true, type: () => String }, bio: { required: true, type: () => String }, avatar: { required: true, type: () => String }, socialLinks: { required: true, type: () => String }, lastLoginIp: { required: true, type: () => String }, lastLoginDate: { required: true, type: () => Date } };
+        return { id: { required: true, type: () => Number }, createDate: { required: true, type: () => Date }, updateDate: { required: true, type: () => Date }, status: { required: true, enum: require("../../../types/enum").DataStatusEnum }, deleteDate: { required: true, type: () => Date }, gender: { required: true, enum: require("../../../types/enum").DataSexEnum }, username: { required: true, type: () => String }, password: { required: true, type: () => String }, email: { required: true, type: () => String }, phoneNumber: { required: true, type: () => String }, bio: { required: true, type: () => String }, avatar: { required: true, type: () => String }, socialLinks: { required: true, type: () => String }, lastLoginIp: { required: true, type: () => String }, lastLoginDate: { required: true, type: () => Date }, roles: { required: true, type: () => [require("../../role/entities/role.entity").Role] } };
     }
 };
 exports.User = User;
@@ -58,7 +59,6 @@ __decorate([
         comment: '删除时间',
         nullable: true,
         default: null,
-        transformer: { from: (value) => value, to: () => new Date() },
     }),
     __metadata("design:type", Date)
 ], User.prototype, "deleteDate", void 0);
@@ -151,6 +151,13 @@ __decorate([
     }),
     __metadata("design:type", Date)
 ], User.prototype, "lastLoginDate", void 0);
+__decorate([
+    (0, typeorm_1.ManyToMany)(() => role_entity_1.Role),
+    (0, typeorm_1.JoinTable)({
+        name: 'user_role_relation',
+    }),
+    __metadata("design:type", Array)
+], User.prototype, "roles", void 0);
 exports.User = User = __decorate([
     (0, typeorm_1.Entity)()
 ], User);

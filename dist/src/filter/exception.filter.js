@@ -23,7 +23,7 @@ let AppExceptionFilter = class AppExceptionFilter {
         const status = exception.getStatus?.() || common_1.HttpStatus.INTERNAL_SERVER_ERROR;
         const request = ctx.getRequest();
         const response = ctx.getResponse();
-        if (exception.stack) {
+        if (exception.stack && process.env.NODE_ENV === 'development') {
             const stack = exception.stack.split('\n').slice(0, 2);
             const { location, message, type } = (0, utils_1.parseErrorMessage)(stack.join('\n'));
             const prefix = chalk.redBright('[Nest] ✘ - ');

@@ -44,6 +44,9 @@ export class UserService {
       where: {
         username: loginUserDto.username,
       },
+      relations: {
+        roles: true,
+      },
     });
     if (!user) throw new BadRequestException('用户名不存在');
     const pair = await compare(loginUserDto.password, user.password);
@@ -65,9 +68,9 @@ export class UserService {
 
   async findList({ page = 1, pageSize = 10 }: PageQueryDto) {
     const [list, total] = await this.userRepo.findAndCount({
-      skip: page * pageSize,
+      skip: (page - 1) * pageSize,
       take: pageSize,
-      withDeleted: true,
+      // withDeleted: true,
     });
     return {
       list,

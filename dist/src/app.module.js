@@ -16,40 +16,50 @@ const yaml_config_1 = require("./config/yaml.config");
 const winston_config_1 = require("./config/winston.config");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_config_1 = require("./config/typeorm.config");
+const redis_config_1 = require("./config/redis.config");
+const enum_1 = require("./types/enum");
 const schedule_1 = require("@nestjs/schedule");
 const exception_filter_1 = require("./filter/exception.filter");
 const core_1 = require("@nestjs/core");
 const response_interceptor_1 = require("./interceptor/response.interceptor");
 const user_module_1 = require("./main/user/user.module");
+const blob_upload_module_1 = require("./main/blob-upload/blob-upload.module");
 const jwt_passport_guard_1 = require("./guard/jwt-passport.guard");
-const imports = [
-    config_1.ConfigModule.forRoot({
-        load: [yaml_config_1.yamlConfigLoad],
-        isGlobal: true,
-        cache: true,
-    }),
-    typeorm_1.TypeOrmModule.forRootAsync({
-        inject: [config_1.ConfigService],
-        useFactory: typeorm_config_1.typeOrmUseFactory,
-    }),
-    schedule_1.ScheduleModule.forRoot(),
-    user_module_1.UserModule,
-];
-if (process.env.NODE_ENV === 'development') {
-    imports.push(nest_winston_1.WinstonModule.forRootAsync({
-        inject: [config_1.ConfigService],
-        useFactory: winston_config_1.winstonUseFactory,
-    }));
-}
+const role_module_1 = require("./main/role/role.module");
+const permission_module_1 = require("./main/permission/permission.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
-        imports,
+        imports: [
+            config_1.ConfigModule.forRoot({
+                load: [yaml_config_1.yamlConfigLoad],
+                isGlobal: true,
+                cache: true,
+            }),
+            nest_winston_1.WinstonModule.forRootAsync({
+                inject: [config_1.ConfigService],
+                useFactory: winston_config_1.winstonUseFactory,
+            }),
+            typeorm_1.TypeOrmModule.forRootAsync({
+                inject: [config_1.ConfigService],
+                useFactory: typeorm_config_1.typeOrmUseFactory,
+            }),
+            schedule_1.ScheduleModule.forRoot(),
+            user_module_1.UserModule,
+            blob_upload_module_1.BlobUploadModule,
+            role_module_1.RoleModule,
+            permission_module_1.PermissionModule,
+        ],
         controllers: [app_controller_1.AppController],
         providers: [
             app_service_1.AppService,
+            {
+                inject: [config_1.ConfigService],
+                provide: enum_1.AppEnum.REDIS,
+                useFactory: redis_config_1.redisUseFactory,
+            },
             { provide: core_1.APP_GUARD, useClass: jwt_passport_guard_1.AppJwtAuthGuard },
             { provide: core_1.APP_FILTER, useClass: exception_filter_1.AppExceptionFilter },
             { provide: core_1.APP_INTERCEPTOR, useClass: response_interceptor_1.AppResponseInterceptor },

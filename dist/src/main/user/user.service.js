@@ -45,6 +45,9 @@ let UserService = class UserService {
             where: {
                 username: loginUserDto.username,
             },
+            relations: {
+                roles: true,
+            },
         });
         if (!user)
             throw new common_1.BadRequestException('用户名不存在');
@@ -63,9 +66,8 @@ let UserService = class UserService {
     }
     async findList({ page = 1, pageSize = 10 }) {
         const [list, total] = await this.userRepo.findAndCount({
-            skip: page * pageSize,
+            skip: (page - 1) * pageSize,
             take: pageSize,
-            withDeleted: true,
         });
         return {
             list,

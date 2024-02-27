@@ -14,7 +14,10 @@ import { AppExceptionFilter } from './filter/exception.filter';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { AppResponseInterceptor } from './interceptor/response.interceptor';
 import { UserModule } from './main/user/user.module';
+import { BlobUploadModule } from './main/blob-upload/blob-upload.module';
 import { AppJwtAuthGuard } from './guard/jwt-passport.guard';
+import { RoleModule } from './main/role/role.module';
+import { PermissionModule } from './main/permission/permission.module';
 
 @Module({
   imports: [
@@ -36,15 +39,18 @@ import { AppJwtAuthGuard } from './guard/jwt-passport.guard';
     }),
     ScheduleModule.forRoot(),
     UserModule,
+    BlobUploadModule,
+    RoleModule,
+    PermissionModule,
   ],
   controllers: [AppController],
   providers: [
     AppService,
-    // {
-    //   inject: [ConfigService],
-    //   provide: AppEnum.REDIS,
-    //   useFactory: redisUseFactory,
-    // },
+    {
+      inject: [ConfigService],
+      provide: AppEnum.REDIS,
+      useFactory: redisUseFactory,
+    },
     { provide: APP_GUARD, useClass: AppJwtAuthGuard },
     { provide: APP_FILTER, useClass: AppExceptionFilter },
     { provide: APP_INTERCEPTOR, useClass: AppResponseInterceptor },
