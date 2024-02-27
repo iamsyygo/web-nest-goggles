@@ -9,6 +9,7 @@ export declare class UserService {
     private readonly configService;
     private jwtService;
     private readonly userRepo;
+    private redisService;
     constructor(configService: ConfigService, jwtService: JwtService);
     create(createUserDto: CreateUserDto): Promise<boolean>;
     login(loginUserDto: CreateUserDto, req: Request): Promise<{

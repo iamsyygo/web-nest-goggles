@@ -7,8 +7,7 @@ import { yamlConfigLoad } from './config/yaml.config';
 import { winstonUseFactory } from './config/winston.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmUseFactory } from './config/typeorm.config';
-import { redisUseFactory } from './config/redis.config';
-import { AppEnum } from './types/enum';
+// import { redisUseFactory } from './config/redis.config';
 import { ScheduleModule } from '@nestjs/schedule';
 import { AppExceptionFilter } from './filter/exception.filter';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
@@ -18,7 +17,7 @@ import { BlobUploadModule } from './main/blob-upload/blob-upload.module';
 import { AppJwtAuthGuard } from './guard/jwt-passport.guard';
 import { RoleModule } from './main/role/role.module';
 import { PermissionModule } from './main/permission/permission.module';
-import { EmailModule } from './main/mail/email.module';
+import { EmailModule } from './main/email/email.module';
 import { RedisModule } from './main/redis/redis.module';
 
 @Module({

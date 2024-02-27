@@ -17,15 +17,23 @@ const typeorm_2 = require("typeorm");
 const config_1 = require("@nestjs/config");
 const bcryptjs_1 = require("bcryptjs");
 const jwt_1 = require("@nestjs/jwt");
+const redis_service_1 = require("../redis/redis.service");
 let UserService = class UserService {
     constructor(configService, jwtService) {
         this.configService = configService;
         this.jwtService = jwtService;
     }
     async create(createUserDto) {
+        const codeInRedis = await this.redisService.get(`app_register_${createUserDto.email}`);
+        if (!codeInRedis) {
+            throw new common_1.UnauthorizedException('验证码已失效');
+        }
+        if (createUserDto.code !== codeInRedis) {
+            throw new common_1.UnauthorizedException('验证码不正确');
+        }
         const notEmpty = await this.userRepo.findOne({
             where: {
-                username: createUserDto.username,
+                username: createUserDto.email,
             },
         });
         if (!!notEmpty)
@@ -38,9 +46,17 @@ let UserService = class UserService {
         });
         if (user.identifiers.length === 0)
             throw new common_1.BadRequestException('创建失败');
+        await this.redisService.del(`app_register_${createUserDto.email}`);
         return true;
     }
     async login(loginUserDto, req) {
+        const codeInRedis = await this.redisService.get(`app_register_${loginUserDto.email}`);
+        if (!codeInRedis) {
+            throw new common_1.UnauthorizedException('验证码已失效');
+        }
+        if (loginUserDto.code !== codeInRedis) {
+            throw new common_1.UnauthorizedException('验证码不正确');
+        }
         const user = await this.userRepo.findOne({
             where: {
                 username: loginUserDto.username,
@@ -54,7 +70,11 @@ let UserService = class UserService {
         const pair = await (0, bcryptjs_1.compare)(loginUserDto.password, user.password);
         if (!pair)
             throw new common_1.BadRequestException('密码错误');
-        const token = await this.jwtService.signAsync({ id: user.id, username: user.username });
+        const token = await this.jwtService.signAsync({
+            id: user.id,
+            username: user.username,
+            email: user.email,
+        });
         const authorization = 'Bearer ' + token;
         user.lastLoginIp = req.headers.host.split(':')[0];
         const u = await this.userRepo.save(user);
@@ -113,6 +133,10 @@ __decorate([
     (0, typeorm_1.InjectRepository)(user_entity_1.User),
     __metadata("design:type", typeorm_2.Repository)
 ], UserService.prototype, "userRepo", void 0);
+__decorate([
+    (0, common_1.Inject)(),
+    __metadata("design:type", redis_service_1.RedisService)
+], UserService.prototype, "redisService", void 0);
 exports.UserService = UserService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [config_1.ConfigService,

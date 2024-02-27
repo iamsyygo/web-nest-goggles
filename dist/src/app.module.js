@@ -25,7 +25,7 @@ const blob_upload_module_1 = require("./main/blob-upload/blob-upload.module");
 const jwt_passport_guard_1 = require("./guard/jwt-passport.guard");
 const role_module_1 = require("./main/role/role.module");
 const permission_module_1 = require("./main/permission/permission.module");
-const email_module_1 = require("./main/mail/email.module");
+const email_module_1 = require("./main/email/email.module");
 const redis_module_1 = require("./main/redis/redis.module");
 let AppModule = class AppModule {
 };

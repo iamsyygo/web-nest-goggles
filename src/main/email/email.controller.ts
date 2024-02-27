@@ -17,6 +17,11 @@ export class EmailController {
   async sendEmailCode(@Query('email') email) {
     const code = Math.random().toString(36).slice(-6);
 
+    const has = await this.redisService.get(`app_register_${email}`);
+    if (has) {
+      throw new Error('请不要频繁发送验证码');
+    }
+
     // 5分钟内有效
     await this.redisService.set(`app_register_${email}`, code, 5 * 60);
     await this.emailService.sendEmail({

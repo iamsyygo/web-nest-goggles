@@ -21,6 +21,9 @@ let RedisService = class RedisService {
             await this.redisClient.expire(key, ttl);
         }
     }
+    async del(key) {
+        await this.redisClient.del(key);
+    }
 };
 exports.RedisService = RedisService;
 __decorate([

@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -9,11 +9,15 @@ import { compare, hashSync } from 'bcryptjs';
 import { Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import { PageQueryDto } from './dto/query-user.dto';
+import { RedisService } from '../redis/redis.service';
 
 @Injectable()
 export class UserService {
   @InjectRepository(User)
   private readonly userRepo: Repository<User>;
+
+  @Inject()
+  private redisService: RedisService;
 
   constructor(
     private readonly configService: ConfigService,
@@ -21,9 +25,17 @@ export class UserService {
   ) {}
 
   async create(createUserDto: CreateUserDto) {
+    const codeInRedis = await this.redisService.get(`app_register_${createUserDto.email}`);
+    if (!codeInRedis) {
+      throw new UnauthorizedException('验证码已失效');
+    }
+    if (createUserDto.code !== codeInRedis) {
+      throw new UnauthorizedException('验证码不正确');
+    }
+
     const notEmpty = await this.userRepo.findOne({
       where: {
-        username: createUserDto.username,
+        username: createUserDto.email,
       },
     });
     if (!!notEmpty) throw new BadRequestException('用户名已存在');
@@ -36,10 +48,19 @@ export class UserService {
     });
 
     if (user.identifiers.length === 0) throw new BadRequestException('创建失败');
+    await this.redisService.del(`app_register_${createUserDto.email}`);
     return true;
   }
 
   async login(loginUserDto: CreateUserDto, req: Request) {
+    const codeInRedis = await this.redisService.get(`app_register_${loginUserDto.email}`);
+    if (!codeInRedis) {
+      throw new UnauthorizedException('验证码已失效');
+    }
+    if (loginUserDto.code !== codeInRedis) {
+      throw new UnauthorizedException('验证码不正确');
+    }
+
     const user = await this.userRepo.findOne({
       where: {
         username: loginUserDto.username,
@@ -52,7 +73,11 @@ export class UserService {
     const pair = await compare(loginUserDto.password, user.password);
     if (!pair) throw new BadRequestException('密码错误');
 
-    const token = await this.jwtService.signAsync({ id: user.id, username: user.username });
+    const token = await this.jwtService.signAsync({
+      id: user.id,
+      username: user.username,
+      email: user.email,
+    });
     const authorization = 'Bearer ' + token;
 
     // @ts-ignore
