@@ -1,7 +1,7 @@
 import { readFile } from 'fs/promises';
 import * as yaml from 'js-yaml';
 import { join } from 'path';
-import { name, version, description } from '@/../package.json';
+import { name, version, description } from '../../package.json';
 
 export const yamlConfigLoad = async (): Promise<AppYamlConfig> => {
   const NODE_ENV = process.env.NODE_ENV || 'development';

@@ -1,4 +1,4 @@
-import { parseErrorMessage } from '@/utils';
+import { parseErrorMessage } from '../utils';
 import {
   ArgumentsHost,
   BadRequestException,
@@ -35,7 +35,7 @@ export class AppExceptionFilter implements ExceptionFilter {
     // this.logger.error(stack.join(' '));
     // }
 
-    if (exception.stack) {
+    if (exception.stack && process.env.NODE_ENV === 'development') {
       // 截取前两行 stack
       const stack = exception.stack.split('\n').slice(0, 2);
 
@@ -48,6 +48,7 @@ export class AppExceptionFilter implements ExceptionFilter {
       const stackPath = location.filePath
         ? chalk.redBright(`\n error at ${location.filePath}:${location.position}`)
         : '';
+      // @ts-ignore
       const log = prefix + dayjs().format('YYYY-MM-DD HH:mm:ss') + ' ' + t + method + msg + stackPath;
       this.logger.log('error', log, { stack: exception.stack });
     }

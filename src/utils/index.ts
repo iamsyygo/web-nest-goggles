@@ -1,3 +1,5 @@
+import { EntityClassOrSchema } from '@nestjs/typeorm/dist/interfaces/entity-class-or-schema.type';
+
 /**
  * 获取系统网卡名称
  * @returns {string}
@@ -37,3 +39,15 @@ export const parseErrorMessage = (errorMessage: string) => {
   }
   return null;
 };
+
+// ['xxx'] or ['!xxx']
+type SelectFields<T extends EntityClassOrSchema> = `!${keyof T & string}`[] | (keyof T)[];
+
+/**
+ * 可以选择非的字段，与 select 相反
+ * @param entity
+ */
+export function getSelect<T extends EntityClassOrSchema>(entity: T, fields: SelectFields<T>) {
+  // const keys = Object.keys(entity) as SelectFields<T>;
+  // return keys.filter((key) => fields.includes(key) || !fields.includes(`!${key}`));
+}

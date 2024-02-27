@@ -8,7 +8,6 @@ import { ConfigService } from '@nestjs/config';
 import { compare, hashSync } from 'bcryptjs';
 import { Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
-import dayjs from 'dayjs';
 import { PageQueryDto } from './dto/query-user.dto';
 
 @Injectable()
@@ -45,6 +44,9 @@ export class UserService {
       where: {
         username: loginUserDto.username,
       },
+      relations: {
+        roles: true,
+      },
     });
     if (!user) throw new BadRequestException('用户名不存在');
     const pair = await compare(loginUserDto.password, user.password);
@@ -53,6 +55,7 @@ export class UserService {
     const token = await this.jwtService.signAsync({ id: user.id, username: user.username });
     const authorization = 'Bearer ' + token;
 
+    // @ts-ignore
     user.lastLoginIp = req.headers.host.split(':')[0];
     const u = await this.userRepo.save(user);
 
@@ -65,8 +68,9 @@ export class UserService {
 
   async findList({ page = 1, pageSize = 10 }: PageQueryDto) {
     const [list, total] = await this.userRepo.findAndCount({
-      skip: page * pageSize,
+      skip: (page - 1) * pageSize,
       take: pageSize,
+      // withDeleted: true,
     });
     return {
       list,
@@ -82,13 +86,30 @@ export class UserService {
     return `This action returns all user`;
   }
   findOne(id: number) {
-    return `This action returns a #${id} user`;
+    // console.log(`this.userRepo`, this.userRepo.metadata.ownColumns);
+
+    return this.userRepo.findOne({
+      where: { id },
+      // select: getSelect(User, ['!prototype']),
+      select: {
+        password: false,
+        ...this.userRepo.metadata.ownColumns.reduce((prev, cur) => {
+          prev[cur.propertyName] = true;
+          return prev;
+        }, {}),
+      },
+    });
   }
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    const result = await this.userRepo.update(id, updateUserDto);
+    if (result.affected === 0) throw new BadRequestException('更新失败');
+    return true;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: number) {
+    const user = await this.userRepo.findOne({ where: { id } });
+    if (!user) throw new BadRequestException('用户不存在');
+    const result = await this.userRepo.softRemove({ ...user });
+    return !!result;
   }
 }

@@ -15,7 +15,7 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserService } from './user.service';
-import { SkipJwtPassport } from '@/decorator/skip-jwt-passport.decorator';
+import { SkipJwtPassport } from '../../decorator/skip-jwt-passport.decorator';
 import { PageQueryDto } from './dto/query-user.dto';
 
 @ApiTags('系统用户')
@@ -49,16 +49,19 @@ export class UserController {
     return this.userService.findList(pageQueryDto);
   }
 
+  @ApiOperation({ description: '', summary: '根据 id 查询' })
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.userService.findOne(+id);
   }
 
+  @ApiOperation({ description: '', summary: '更新用户' })
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(+id, updateUserDto);
   }
 
+  @ApiOperation({ description: '', summary: '删除用户' })
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.userService.remove(+id);

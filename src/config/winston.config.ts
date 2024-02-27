@@ -4,7 +4,11 @@ import * as winston from 'winston';
 import 'winston-daily-rotate-file';
 import * as path from 'path';
 
-export const winstonUseFactory = (configService: ConfigService): WinstonModuleOptions => {
+export const winstonUseFactory = (
+  configService: ConfigService,
+): WinstonModuleOptions | Record<keyof any, any> => {
+  if (process.env.NODE_ENV !== 'development') return {};
+
   const winstonWonfig = configService.get('logs.winston') as AppYamlConfig['logs']['winston'];
   const { dirname, filename, datePattern, level, ...rest } = winstonWonfig;
   const pwd = process.cwd();
@@ -53,5 +57,6 @@ export const winstonUseFactory = (configService: ConfigService): WinstonModuleOp
         ...rest,
       }),
     ],
+    exitOnError: true,
   };
 };

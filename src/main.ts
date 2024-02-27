@@ -4,8 +4,8 @@ import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { consola } from 'consola';
 import { ip } from 'address';
-import { getNetworkInterfaceName } from '@/utils';
-import { setupSwagger } from '@/config/swagger.config';
+import { getNetworkInterfaceName } from './utils';
+import { setupSwagger } from './config/swagger.config';
 // import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { ValidationPipe } from '@nestjs/common';
 
@@ -24,7 +24,7 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       // 去除在类dto上不存在的字段
-      // whitelist: true,
+      whitelist: true,
     }),
   );
 

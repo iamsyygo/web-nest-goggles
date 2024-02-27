@@ -56,4 +56,7 @@ type AppYamlConfig = {
       maxFiles: string;
     };
   };
+  vercel: {
+    blob_read_write_token: string;
+  };
 };
