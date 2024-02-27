@@ -28,8 +28,8 @@ async function bootstrap() {
         message: `🥽 应用程序启动成功，运行在:`,
         badge: true,
     });
-    consola_1.consola.success(`http://localhost:${application.port}`);
-    consola_1.consola.success(`http://${ipv4}:${application.port}\n`);
+    consola_1.consola.success(`<🏄/> http://localhost:${application.port}`);
+    consola_1.consola.success(`<🏄/> http://${ipv4}:${application.port}\n`);
     consola_1.consola.start('📖 swagger 文档运行在:');
     consola_1.consola.success(`http://localhost:${application.port}/docs`);
     consola_1.consola.success(`http://${ipv4}:${application.port}/docs`);

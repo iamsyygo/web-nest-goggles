@@ -21,6 +21,7 @@ type AppYamlConfig = {
     };
     redis: {
       host: string;
+      username: string;
       port: number;
       password: string;
       db: number;
@@ -58,5 +59,13 @@ type AppYamlConfig = {
   };
   vercel: {
     blob_read_write_token: string;
+  };
+  email: {
+    host: string;
+    port: number;
+    auth: {
+      user: string;
+      pass: string;
+    };
   };
 };

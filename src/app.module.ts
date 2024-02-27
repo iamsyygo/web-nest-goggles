@@ -18,6 +18,8 @@ import { BlobUploadModule } from './main/blob-upload/blob-upload.module';
 import { AppJwtAuthGuard } from './guard/jwt-passport.guard';
 import { RoleModule } from './main/role/role.module';
 import { PermissionModule } from './main/permission/permission.module';
+import { EmailModule } from './main/mail/email.module';
+import { RedisModule } from './main/redis/redis.module';
 
 @Module({
   imports: [
@@ -42,15 +44,17 @@ import { PermissionModule } from './main/permission/permission.module';
     BlobUploadModule,
     RoleModule,
     PermissionModule,
+    EmailModule,
+    RedisModule,
   ],
   controllers: [AppController],
   providers: [
     AppService,
-    {
-      inject: [ConfigService],
-      provide: AppEnum.REDIS,
-      useFactory: redisUseFactory,
-    },
+    // {
+    //   inject: [ConfigService],
+    //   provide: AppEnum.REDIS,
+    //   useFactory: redisUseFactory,
+    // },
     { provide: APP_GUARD, useClass: AppJwtAuthGuard },
     { provide: APP_FILTER, useClass: AppExceptionFilter },
     { provide: APP_INTERCEPTOR, useClass: AppResponseInterceptor },

@@ -16,8 +16,6 @@ const yaml_config_1 = require("./config/yaml.config");
 const winston_config_1 = require("./config/winston.config");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_config_1 = require("./config/typeorm.config");
-const redis_config_1 = require("./config/redis.config");
-const enum_1 = require("./types/enum");
 const schedule_1 = require("@nestjs/schedule");
 const exception_filter_1 = require("./filter/exception.filter");
 const core_1 = require("@nestjs/core");
@@ -27,6 +25,8 @@ const blob_upload_module_1 = require("./main/blob-upload/blob-upload.module");
 const jwt_passport_guard_1 = require("./guard/jwt-passport.guard");
 const role_module_1 = require("./main/role/role.module");
 const permission_module_1 = require("./main/permission/permission.module");
+const email_module_1 = require("./main/mail/email.module");
+const redis_module_1 = require("./main/redis/redis.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -51,15 +51,12 @@ exports.AppModule = AppModule = __decorate([
             blob_upload_module_1.BlobUploadModule,
             role_module_1.RoleModule,
             permission_module_1.PermissionModule,
+            email_module_1.EmailModule,
+            redis_module_1.RedisModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [
             app_service_1.AppService,
-            {
-                inject: [config_1.ConfigService],
-                provide: enum_1.AppEnum.REDIS,
-                useFactory: redis_config_1.redisUseFactory,
-            },
             { provide: core_1.APP_GUARD, useClass: jwt_passport_guard_1.AppJwtAuthGuard },
             { provide: core_1.APP_FILTER, useClass: exception_filter_1.AppExceptionFilter },
             { provide: core_1.APP_INTERCEPTOR, useClass: response_interceptor_1.AppResponseInterceptor },

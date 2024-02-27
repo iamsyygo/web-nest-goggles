@@ -6,14 +6,9 @@
     "auditLog": "/Volumes/aoe/web-design/meta/web-nest-goggles/logs/winston/.34a4cef7c72861fffe4c97d6bd8c55f00b319268-audit.json",
     "files": [
         {
-            "date": 1706014116411,
-            "name": "/Volumes/aoe/web-design/meta/web-nest-goggles/logs/winston/2024-01-23.exception.log",
-            "hash": "0fe0967eee8312d5fc9fe5371cd3a742ae3e5b2564e6834ce5eaeec811fd9b1a"
-        },
-        {
-            "date": 1706184845891,
-            "name": "/Volumes/aoe/web-design/meta/web-nest-goggles/logs/winston/2024-01-25.exception.log",
-            "hash": "ad121073b68650b4f228a81c9879c65bbc54bb77c9d65bb0979ba85ab7f1ccdb"
+            "date": 1709038949909,
+            "name": "/Volumes/aoe/web-design/meta/web-nest-goggles/logs/winston/2024-02-27.exception.log",
+            "hash": "e9c54c4586c870426c56450817bf89148529ef2d4f7950a2a336477d7799803d"
         }
     ],
     "hashType": "sha256"
