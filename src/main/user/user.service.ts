@@ -72,12 +72,39 @@ export class UserService {
     const pair = await compare(loginUserDto.password, user.password);
     if (!pair) throw new BadRequestException('密码错误');
 
-    const token = await this.jwtService.signAsync({
-      id: user.id,
-      username: user.username,
-      email: user.email,
-    });
-    const authorization = 'Bearer ' + token;
+    const jwtConfig = this.configService.get('jwt', {
+      secret: 'qEOIqLteHfXO',
+      signOptions: { expiresIn: '1d' },
+    }) as AppYamlConfig['jwt'];
+
+    const token = await this.jwtService.signAsync(
+      {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+      },
+      {
+        secret: jwtConfig.secret,
+        expiresIn: jwtConfig.signOptions.expiresIn,
+      },
+    );
+    const access_token = 'Bearer ' + token;
+
+    const refreshConfig = this.configService.get('refresh_token', {
+      secret: 'qEOIqLteHfJfawXO',
+      signOptions: { expiresIn: '7d' },
+    }) as AppYamlConfig['refresh_token'];
+
+    const refresh_token = await this.jwtService.signAsync(
+      {
+        id: user.id,
+        email: user.email,
+      },
+      {
+        secret: refreshConfig.secret,
+        expiresIn: refreshConfig.signOptions.expiresIn,
+      },
+    );
 
     // @ts-ignore
     user.lastLoginIp = req.headers.host.split(':')[0];
@@ -85,7 +112,9 @@ export class UserService {
 
     delete u.password;
     return {
-      authorization,
+      // authorization,
+      access_token,
+      refresh_token,
       user: u,
     };
   }

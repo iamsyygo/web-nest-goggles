@@ -46,6 +46,13 @@ type AppYamlConfig = {
     };
   };
 
+  refresh_token: {
+    secret: string;
+    signOptions: {
+      expiresIn: string;
+    };
+  };
+
   logs: {
     winston: {
       dirname: string;
