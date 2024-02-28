@@ -10,6 +10,7 @@ import {
   HttpCode,
   HttpException,
   Query,
+  Inject,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -17,10 +18,14 @@ import { UpdateUserDto, UpdateUserPasswordDto } from './dto/update-user.dto';
 import { UserService } from './user.service';
 import { SkipJwtPassport } from '../../decorator/skip-jwt-passport.decorator';
 import { PageQueryDto } from './dto/query-user.dto';
+import { JwtService } from '@nestjs/jwt';
 
 @ApiTags('系统用户')
 @Controller('user')
 export class UserController {
+  @Inject()
+  private jwtService: JwtService;
+
   constructor(private readonly userService: UserService) {}
   @ApiOperation({ description: '', summary: '创建用户' })
   @SkipJwtPassport()
@@ -71,5 +76,38 @@ export class UserController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.userService.remove(+id);
+  }
+
+  @Get('refresh-token')
+  async refresh(@Query('refresh_token') refreshToken: string) {
+    const data = this.jwtService.verify(refreshToken);
+
+    if (!data) throw new HttpException('refresh_token 无效，请重新登录', 401);
+
+    const user = await this.userService.findOne(data.userId);
+
+    const access_token = this.jwtService.sign(
+      {
+        userId: user.id,
+        username: user.username,
+      },
+      {
+        expiresIn: '30m',
+      },
+    );
+
+    const refresh_token = this.jwtService.sign(
+      {
+        userId: user.id,
+      },
+      {
+        expiresIn: '7d',
+      },
+    );
+
+    return {
+      access_token,
+      refresh_token,
+    };
   }
 }
