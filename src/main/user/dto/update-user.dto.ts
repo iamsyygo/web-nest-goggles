@@ -4,7 +4,10 @@ import { IsNotEmpty } from 'class-validator';
 
 export class UpdateUserDto extends PartialType(
   OmitType(User, ['createDate', 'password', 'lastLoginDate', 'lastLoginIp', 'updateDate'] as const),
-) {}
+) {
+  @ApiProperty({ description: '验证码', example: '123456' })
+  code: string;
+}
 
 export class UpdateUserPasswordDto {
   @IsNotEmpty({ message: '旧密码不能为空' })
@@ -18,4 +21,12 @@ export class UpdateUserPasswordDto {
   @IsNotEmpty({ message: '确认密码不能为空' })
   @ApiProperty({ description: '确认密码', example: '123456' })
   confirmPassword: string;
+
+  @IsNotEmpty({ message: '验证码不能为空' })
+  @ApiProperty({ description: '验证码', example: '123456' })
+  code: string;
+
+  // @IsNotEmpty({ message: '邮箱不能为空' })
+  // @ApiProperty({ description: '邮箱', example: 'xxx@qq.com' })
+  // email: string;
 }

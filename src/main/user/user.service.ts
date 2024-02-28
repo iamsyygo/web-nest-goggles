@@ -133,8 +133,21 @@ export class UserService {
     // if (updateUserDto.password) {
     //   delete updateUserDto.password;
     // }
-    const result = await this.userRepo.update(id, updateUserDto);
-    if (result.affected === 0) throw new BadRequestException('更新失败');
+    // fix roles not update link:https://github.com/typeorm/typeorm/issues/8245
+    // const result = await this.userRepo.update(id, updateUserDto);
+
+    const isRepeat = await this.userRepo.findOne({ where: { email: updateUserDto.email } });
+
+    if (isRepeat.id !== id) throw new BadRequestException('邮箱已存在');
+
+    const code = await this.redisService.get(`app_register_captcha_${updateUserDto.email}`);
+    if (!code) throw new BadRequestException('验证码已失效');
+    if (updateUserDto.code !== code) throw new BadRequestException('验证码不正确');
+
+    const result = await this.userRepo.save(updateUserDto);
+    if (!result) throw new BadRequestException('更新失败');
+
+    await this.redisService.del(`app_register_captcha_${updateUserDto.email}`);
     return true;
   }
 
@@ -145,6 +158,11 @@ export class UserService {
     const pair = await compare(oldPassword, user.password);
     if (!pair) throw new BadRequestException('旧密码错误');
     if (newPassword !== confirmPassword) throw new BadRequestException('两次密码不一致');
+
+    const code = await this.redisService.get(`app_register_captcha_${user.email}`);
+    if (!code) throw new BadRequestException('验证码已失效');
+    if (updateUserPasswordDto.code !== code) throw new BadRequestException('验证码不正确');
+
     const salt = this.configService.get('bcrypt.salt', 10);
     const password = await hashSync(newPassword, salt);
     const result = await this.userRepo.update(id, { password });
@@ -158,4 +176,15 @@ export class UserService {
     const result = await this.userRepo.softRemove({ ...user });
     return !!result;
   }
+
+  // 找回密码
+  // async findPassword(email: string, code: string) {
+  //   const user = await this.userRepo.findOne({ where: { email } });
+  //   if (!user) throw new BadRequestException('用户不存在');
+
+  //   const redisCode = await this.redisService.get(`app_register_captcha_${user.email}`);
+  //   if (!redisCode) throw new BadRequestException('验证码已失效');
+  //   if (redisCode !== code) throw new BadRequestException('验证码不正确');
+  //   return true;
+  // }
 }
