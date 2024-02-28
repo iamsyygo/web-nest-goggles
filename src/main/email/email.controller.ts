@@ -1,10 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Inject } from '@nestjs/common';
-import { EmailService } from './email.service';
-import { CreateMailDto } from './dto/create-email.dto';
-import { UpdateMailDto } from './dto/update-email.dto';
+import { Controller, Get, Inject, Query } from '@nestjs/common';
+import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { RedisService } from '../redis/redis.service';
-import { ApiOperation, ApiQuery } from '@nestjs/swagger';
+import { EmailService } from './email.service';
 
+@ApiTags('邮箱相关接口')
 @Controller('email')
 export class EmailController {
   @Inject()
@@ -29,7 +28,7 @@ export class EmailController {
   @Get('resend-code')
   async sendResendEmailCode(@Query('email') email) {
     const code = await this.handleCaptcha(email);
-    await this.emailService.sendQQEmail({
+    await this.emailService.sendResendEmail({
       to: email,
       subject: '注册验证码',
       html: `<h3>你的注册验证码是 <span style="color:blue">${code}</span></h3>`,

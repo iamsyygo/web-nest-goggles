@@ -21,7 +21,7 @@ import { SkipJwtPassport } from '../../decorator/skip-jwt-passport.decorator';
 import { PageQueryDto } from './dto/query-blob-upload.dto';
 import { AnyFilesInterceptor, FileInterceptor } from '@nestjs/platform-express';
 
-@ApiTags('vercel blob upload')
+@ApiTags('vercel blob 文件相关接口')
 @Controller('blob-upload')
 export class BlobUploadController {
   constructor(private readonly blobUploadService: BlobUploadService) {}
