@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, repl } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { consola } from 'consola';
@@ -13,6 +13,13 @@ declare const module: any;
 
 async function bootstrap() {
   const now = Date.now();
+  if (process.env.REPL == '1') {
+    const replServer = await repl(AppModule);
+    replServer.setupHistory('.repl_history', (err) => {
+      if (err) throw err;
+    });
+  }
+
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
   const application: AppYamlConfig['application'] = configService.get('application');
@@ -27,6 +34,8 @@ async function bootstrap() {
       whitelist: true,
     }),
   );
+
+  // app.enableCors();
 
   await app.listen(application.port);
 

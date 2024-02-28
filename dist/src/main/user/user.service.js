@@ -24,7 +24,7 @@ let UserService = class UserService {
         this.jwtService = jwtService;
     }
     async create(createUserDto) {
-        const codeInRedis = await this.redisService.get(`app_register_${createUserDto.email}`);
+        const codeInRedis = await this.redisService.get(`app_register_captcha_${createUserDto.email}`);
         if (!codeInRedis) {
             throw new common_1.UnauthorizedException('验证码已失效');
         }
@@ -46,11 +46,11 @@ let UserService = class UserService {
         });
         if (user.identifiers.length === 0)
             throw new common_1.BadRequestException('创建失败');
-        await this.redisService.del(`app_register_${createUserDto.email}`);
+        await this.redisService.del(`app_register_captcha_${createUserDto.email}`);
         return true;
     }
     async login(loginUserDto, req) {
-        const codeInRedis = await this.redisService.get(`app_register_${loginUserDto.email}`);
+        const codeInRedis = await this.redisService.get(`app_register_captcha_${loginUserDto.email}`);
         if (!codeInRedis) {
             throw new common_1.UnauthorizedException('验证码已失效');
         }

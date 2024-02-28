@@ -3,5 +3,7 @@ export declare class EmailController {
     private readonly emailService;
     private redisService;
     constructor(emailService: EmailService);
-    sendEmailCode(email: any): Promise<boolean>;
+    sendQQEmailCode(email: any): Promise<boolean>;
+    sendResendEmailCode(email: any): Promise<boolean>;
+    private handleCaptcha;
 }

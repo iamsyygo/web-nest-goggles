@@ -22,19 +22,32 @@ let EmailController = class EmailController {
     constructor(emailService) {
         this.emailService = emailService;
     }
-    async sendEmailCode(email) {
-        const code = Math.random().toString(36).slice(-6);
-        const has = await this.redisService.get(`app_register_${email}`);
-        if (has) {
-            throw new Error('请不要频繁发送验证码');
-        }
-        await this.redisService.set(`app_register_${email}`, code, 5 * 60);
-        await this.emailService.sendEmail({
+    async sendQQEmailCode(email) {
+        const code = await this.handleCaptcha(email);
+        await this.emailService.sendQQEmail({
             to: email,
             subject: '注册验证码',
             html: `<h3>你的注册验证码是 <span style="color:blue">${code}</span></h3>`,
         });
         return true;
+    }
+    async sendResendEmailCode(email) {
+        const code = await this.handleCaptcha(email);
+        await this.emailService.sendQQEmail({
+            to: email,
+            subject: '注册验证码',
+            html: `<h3>你的注册验证码是 <span style="color:blue">${code}</span></h3>`,
+        });
+        return true;
+    }
+    async handleCaptcha(email) {
+        const code = Math.random().toString(36).slice(-6);
+        const has = await this.redisService.get(`app_register_captcha_${email}`);
+        if (has) {
+            throw new Error('请不要频繁发送验证码');
+        }
+        this.redisService.set(`app_register_captcha_${email}`, code, 5 * 60);
+        return code;
     }
 };
 exports.EmailController = EmailController;
@@ -43,15 +56,25 @@ __decorate([
     __metadata("design:type", redis_service_1.RedisService)
 ], EmailController.prototype, "redisService", void 0);
 __decorate([
-    (0, swagger_1.ApiOperation)({ description: '发送邮件验证码', summary: '发送邮件验证码' }),
-    (0, swagger_1.ApiQuery)({ name: 'email', required: true, description: '邮箱' }),
-    (0, common_1.Get)('code'),
+    (0, swagger_1.ApiOperation)({ summary: '发送邮件验证码' }),
+    (0, swagger_1.ApiQuery)({ name: 'email', required: true, description: '邮箱', example: '268303068722@qq.com' }),
+    (0, common_1.Get)('qq-code'),
     openapi.ApiResponse({ status: 200, type: Boolean }),
     __param(0, (0, common_1.Query)('email')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
-], EmailController.prototype, "sendEmailCode", null);
+], EmailController.prototype, "sendQQEmailCode", null);
+__decorate([
+    (0, swagger_1.ApiOperation)({ description: '发送Resend验证码', summary: '发送邮件验证码' }),
+    (0, swagger_1.ApiQuery)({ name: 'email', required: true, description: '邮箱' }),
+    (0, common_1.Get)('resend-code'),
+    openapi.ApiResponse({ status: 200, type: Boolean }),
+    __param(0, (0, common_1.Query)('email')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], EmailController.prototype, "sendResendEmailCode", null);
 exports.EmailController = EmailController = __decorate([
     (0, common_1.Controller)('email'),
     __metadata("design:paramtypes", [email_service_1.EmailService])

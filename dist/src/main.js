@@ -10,6 +10,11 @@ const swagger_config_1 = require("./config/swagger.config");
 const common_1 = require("@nestjs/common");
 async function bootstrap() {
     const now = Date.now();
+    const replServer = await (0, core_1.repl)(app_module_1.AppModule);
+    replServer.setupHistory('.repl_history', (err) => {
+        if (err)
+            throw err;
+    });
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     const configService = app.get(config_1.ConfigService);
     const application = configService.get('application');

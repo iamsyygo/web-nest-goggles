@@ -5,6 +5,12 @@ export declare class EmailService {
     private readonly configService;
     transporter: Transporter;
     emailConfig: AppYamlConfig['email'];
+    resendApiKey: string;
     constructor(configService: ConfigService);
-    sendEmail({ to, subject, html }: Mail.Options): Promise<void>;
+    sendQQEmail({ to, subject, html }: Mail.Options): Promise<void>;
+    sendResendEmail({ to, subject, html }: {
+        to: any;
+        subject: any;
+        html: any;
+    }): Promise<void>;
 }

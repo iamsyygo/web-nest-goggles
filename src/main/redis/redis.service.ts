@@ -4,7 +4,10 @@ import { RedisClientType } from 'redis';
 @Injectable()
 export class RedisService {
   @Inject('REDIS_CLIENT')
-  private redisClient: RedisClientType;
+  // private readonly redisClient: RedisClientType;
+
+  // fix vercel deploy log by redis_1 is not defined(RedisClientType)
+  private readonly redisClient: any;
 
   async get(key: string) {
     return await this.redisClient.get(key);

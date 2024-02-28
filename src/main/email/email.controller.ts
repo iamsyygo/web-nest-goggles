@@ -11,24 +11,43 @@ export class EmailController {
   private redisService: RedisService;
   constructor(private readonly emailService: EmailService) {}
 
-  @ApiOperation({ description: '发送邮件验证码', summary: '发送邮件验证码' })
-  @ApiQuery({ name: 'email', required: true, description: '邮箱' })
-  @Get('code')
-  async sendEmailCode(@Query('email') email) {
-    const code = Math.random().toString(36).slice(-6);
-
-    const has = await this.redisService.get(`app_register_${email}`);
-    if (has) {
-      throw new Error('请不要频繁发送验证码');
-    }
-
-    // 5分钟内有效
-    await this.redisService.set(`app_register_${email}`, code, 5 * 60);
-    await this.emailService.sendEmail({
+  @ApiOperation({ summary: '发送邮件验证码' })
+  @ApiQuery({ name: 'email', required: true, description: '邮箱', example: '268303068722@qq.com' })
+  @Get('qq-code')
+  async sendQQEmailCode(@Query('email') email) {
+    const code = await this.handleCaptcha(email);
+    await this.emailService.sendQQEmail({
       to: email,
       subject: '注册验证码',
       html: `<h3>你的注册验证码是 <span style="color:blue">${code}</span></h3>`,
     });
     return true;
+  }
+
+  @ApiOperation({ description: '发送Resend验证码', summary: '发送邮件验证码' })
+  @ApiQuery({ name: 'email', required: true, description: '邮箱' })
+  @Get('resend-code')
+  async sendResendEmailCode(@Query('email') email) {
+    const code = await this.handleCaptcha(email);
+    await this.emailService.sendQQEmail({
+      to: email,
+      subject: '注册验证码',
+      html: `<h3>你的注册验证码是 <span style="color:blue">${code}</span></h3>`,
+    });
+    return true;
+  }
+
+  private async handleCaptcha(email: string) {
+    // 生成验证码
+    const code = Math.random().toString(36).slice(-6);
+
+    const has = await this.redisService.get(`app_register_captcha_${email}`);
+    if (has) {
+      throw new Error('请不要频繁发送验证码');
+    }
+
+    // 保存到redis
+    this.redisService.set(`app_register_captcha_${email}`, code, 5 * 60);
+    return code;
   }
 }

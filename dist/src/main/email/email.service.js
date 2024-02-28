@@ -13,19 +13,30 @@ exports.EmailService = void 0;
 const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
 const nodemailer_1 = require("nodemailer");
+const resend_1 = require("resend");
 let EmailService = class EmailService {
     constructor(configService) {
         this.configService = configService;
         const email = this.configService.get('email');
+        this.resendApiKey = this.configService.get('resendApiKey');
         this.emailConfig = email;
         this.transporter = (0, nodemailer_1.createTransport)(email);
     }
-    async sendEmail({ to, subject, html }) {
+    async sendQQEmail({ to, subject, html }) {
         await this.transporter.sendMail({
             from: {
                 name: '系统邮件',
                 address: this.emailConfig.auth.user,
             },
+            to,
+            subject,
+            html,
+        });
+    }
+    async sendResendEmail({ to, subject, html }) {
+        const resend = new resend_1.Resend(this.resendApiKey);
+        await resend.emails.send({
+            from: 'onboarding@resend.dev',
             to,
             subject,
             html,
