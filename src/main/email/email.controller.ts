@@ -46,7 +46,7 @@ export class EmailController {
     }
 
     // 保存到redis
-    this.redisService.set(`app_register_captcha_${email}`, code, 5 * 60);
+    this.redisService.set(`app_register_captcha_${email}`, code, 3 * 60);
     return code;
   }
 }

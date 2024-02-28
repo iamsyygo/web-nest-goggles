@@ -1,6 +1,6 @@
 import { BadRequestException, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateUserDto, UpdateUserPasswordDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
@@ -25,6 +25,9 @@ export class UserService {
   ) {}
 
   async create(createUserDto: CreateUserDto) {
+    const notEmpty = await this.userRepo.findOne({ where: { email: createUserDto.email } });
+    if (!!notEmpty) throw new BadRequestException('用户名已存在');
+
     const codeInRedis = await this.redisService.get(`app_register_captcha_${createUserDto.email}`);
     if (!codeInRedis) {
       throw new UnauthorizedException('验证码已失效');
@@ -32,13 +35,6 @@ export class UserService {
     if (createUserDto.code !== codeInRedis) {
       throw new UnauthorizedException('验证码不正确');
     }
-
-    const notEmpty = await this.userRepo.findOne({
-      where: {
-        username: createUserDto.email,
-      },
-    });
-    if (!!notEmpty) throw new BadRequestException('用户名已存在');
 
     const salt = this.configService.get('bcrypt.salt', 10);
     const password = await hashSync(createUserDto.password, salt);
@@ -53,23 +49,26 @@ export class UserService {
   }
 
   async login(loginUserDto: CreateUserDto, req: Request) {
-    const codeInRedis = await this.redisService.get(`app_register_captcha_${loginUserDto.email}`);
-    if (!codeInRedis) {
-      throw new UnauthorizedException('验证码已失效');
-    }
-    if (loginUserDto.code !== codeInRedis) {
-      throw new UnauthorizedException('验证码不正确');
-    }
-
     const user = await this.userRepo.findOne({
       where: {
         username: loginUserDto.username,
       },
       relations: {
-        roles: true,
+        roles: {
+          permissions: true,
+        },
       },
     });
     if (!user) throw new BadRequestException('用户名不存在');
+
+    // const codeInRedis = await this.redisService.get(`app_register_captcha_${loginUserDto.email}`);
+    // if (!codeInRedis) {
+    //   throw new UnauthorizedException('验证码已失效');
+    // }
+    // if (loginUserDto.code !== codeInRedis) {
+    //   throw new UnauthorizedException('验证码不正确');
+    // }
+
     const pair = await compare(loginUserDto.password, user.password);
     if (!pair) throw new BadRequestException('密码错误');
 
@@ -123,10 +122,32 @@ export class UserService {
           return prev;
         }, {}),
       },
+      relations: {
+        roles: {
+          permissions: true,
+        },
+      },
     });
   }
   async update(id: number, updateUserDto: UpdateUserDto) {
+    // if (updateUserDto.password) {
+    //   delete updateUserDto.password;
+    // }
     const result = await this.userRepo.update(id, updateUserDto);
+    if (result.affected === 0) throw new BadRequestException('更新失败');
+    return true;
+  }
+
+  async updatePassword(id: number, updateUserPasswordDto: UpdateUserPasswordDto) {
+    const { confirmPassword, newPassword, oldPassword } = updateUserPasswordDto;
+    const user = await this.userRepo.findOne({ where: { id } });
+    if (!user) throw new BadRequestException('用户不存在');
+    const pair = await compare(oldPassword, user.password);
+    if (!pair) throw new BadRequestException('旧密码错误');
+    if (newPassword !== confirmPassword) throw new BadRequestException('两次密码不一致');
+    const salt = this.configService.get('bcrypt.salt', 10);
+    const password = await hashSync(newPassword, salt);
+    const result = await this.userRepo.update(id, { password });
     if (result.affected === 0) throw new BadRequestException('更新失败');
     return true;
   }
