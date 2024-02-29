@@ -42,6 +42,7 @@ export class UserController {
     return this.userService.login(loginUserDto, req);
   }
 
+  @ApiOperation({ description: '', summary: '获取所有的用户' })
   @Get()
   findAll() {
     return this.userService.findAll();
@@ -78,32 +79,14 @@ export class UserController {
     return this.userService.remove(+id);
   }
 
+  @ApiOperation({ description: '', summary: '刷新令牌' })
   @Get('refresh-token')
-  async refresh(@Query('refresh_token') refreshToken: string) {
-    const data = this.jwtService.verify(refreshToken);
+  async refreshToken(@Query('refresh_token') refreshToken: string) {
+    const results = this.jwtService.verify(refreshToken);
+    if (!results) throw new HttpException('refresh_token 无效，请重新登录', 401);
 
-    if (!data) throw new HttpException('refresh_token 无效，请重新登录', 401);
-
-    const user = await this.userService.findOne(data.userId);
-
-    const access_token = this.jwtService.sign(
-      {
-        userId: user.id,
-        username: user.username,
-      },
-      {
-        expiresIn: '30m',
-      },
-    );
-
-    const refresh_token = this.jwtService.sign(
-      {
-        userId: user.id,
-      },
-      {
-        expiresIn: '7d',
-      },
-    );
+    const user = await this.userService.findOne(results.id);
+    const { access_token, refresh_token } = await this.userService.getAppToken(user);
 
     return {
       access_token,
