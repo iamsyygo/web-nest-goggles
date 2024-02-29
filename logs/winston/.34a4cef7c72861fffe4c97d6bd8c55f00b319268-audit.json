@@ -14,6 +14,11 @@
             "date": 1709125050766,
             "name": "/Volumes/aoe/web-design/meta/web-nest-goggles/logs/winston/2024-02-28.exception.log",
             "hash": "10771278f80c39b93ac7030e805bdeabccbf1b8b5266bf2d89df23ec3a0d193c"
+        },
+        {
+            "date": 1709213653211,
+            "name": "/Volumes/aoe/web-design/meta/web-nest-goggles/logs/winston/2024-02-29.exception.log",
+            "hash": "449f579728cb15a41526602f611c1d933db2039a5029c3dfdaac109ed539db97"
         }
     ],
     "hashType": "sha256"

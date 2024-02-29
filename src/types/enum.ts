@@ -17,3 +17,8 @@ export enum DataSexEnum {
   FEMALE = 2,
   UNKNOWN = 3,
 }
+
+export enum AppRedisKeyEnum {
+  // 身份验证验证码
+  CAPTCHA = 'app-captcha:',
+}

@@ -2,6 +2,7 @@ import { Controller, Get, Inject, Query } from '@nestjs/common';
 import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { RedisService } from '../redis/redis.service';
 import { EmailService } from './email.service';
+import { AppRedisKeyEnum } from '../../types/enum';
 
 @ApiTags('邮箱相关接口')
 @Controller('email')
@@ -40,13 +41,13 @@ export class EmailController {
     // 生成验证码
     const code = Math.random().toString(36).slice(-6);
 
-    const has = await this.redisService.get(`app_register_captcha_${email}`);
+    const has = await this.redisService.get(AppRedisKeyEnum.CAPTCHA + email);
     if (has) {
       throw new Error('请不要频繁发送验证码');
     }
 
     // 保存到redis
-    this.redisService.set(`app_register_captcha_${email}`, code, 3 * 60);
+    this.redisService.set(AppRedisKeyEnum.CAPTCHA + email, code, 3 * 60);
     return code;
   }
 }

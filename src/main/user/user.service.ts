@@ -17,6 +17,7 @@ import { Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import { PageQueryDto } from './dto/query-user.dto';
 import { RedisService } from '../redis/redis.service';
+import { AppRedisKeyEnum } from '../../types/enum';
 
 @Injectable()
 export class UserService {
@@ -35,7 +36,11 @@ export class UserService {
     const user = await this.userRepo.findOne({ where: { email: createUserDto.email } });
     if (!!user) throw new BadRequestException('用户名已存在');
 
-    await this.onVerifyCode({ email: createUserDto.email, code: createUserDto.code });
+    await this.onVerifyCode({
+      email: createUserDto.email,
+      code: createUserDto.code,
+      prefix: AppRedisKeyEnum.CAPTCHA,
+    });
 
     const salt = this.configService.get('bcrypt.salt', 10);
     const password = await hashSync(createUserDto.password, salt);
@@ -46,7 +51,7 @@ export class UserService {
     });
 
     if (results.identifiers.length === 0) throw new BadRequestException('创建失败');
-    await this.redisService.del(`app_register_captcha_${createUserDto.email}`);
+    await this.redisService.del(AppRedisKeyEnum.CAPTCHA + createUserDto.email);
     return true;
   }
 
@@ -57,7 +62,7 @@ export class UserService {
     });
     if (!user) throw new BadRequestException('用户名不存在');
 
-    await this.onVerifyCode({ email: user.email, code });
+    await this.onVerifyCode({ email: user.email, code, prefix: AppRedisKeyEnum.CAPTCHA });
 
     const issuccess = await compare(password, user.password);
     if (!issuccess) throw new BadRequestException('密码错误');
@@ -130,7 +135,7 @@ export class UserService {
     const result = await this.userRepo.save(updateUserDto);
     if (!result) throw new BadRequestException('更新失败');
 
-    await this.redisService.del(`app_register_captcha_${email}`);
+    await this.redisService.del(AppRedisKeyEnum.CAPTCHA + email);
     return true;
   }
 
@@ -164,13 +169,13 @@ export class UserService {
   //   const user = await this.userRepo.findOne({ where: { email } });
   //   if (!user) throw new BadRequestException('用户不存在');
 
-  //   const redisCode = await this.redisService.get(`app_register_captcha_${user.email}`);
+  //   const redisCode = await this.redisService.get(AppRedisKeyEnum.CAPTCHA + email);
   //   if (!redisCode) throw new BadRequestException('验证码已失效');
   //   if (redisCode !== code) throw new BadRequestException('验证码不正确');
   //   return true;
   // }
   async onVerifyCode(value: { email: string; code: string; prefix?: string }) {
-    const { email, code, prefix = 'app_register_captcha_' } = value;
+    const { email, code, prefix = AppRedisKeyEnum.CAPTCHA } = value;
     const c = await this.redisService.get(prefix + email);
     if (!c) {
       throw new UnauthorizedException('验证码已失效');
@@ -194,14 +199,14 @@ export class UserService {
     );
     const access_token = 'Bearer ' + sign;
 
-    const refresh_token = await this.jwtService.signAsync(
+    const refresh = await this.jwtService.signAsync(
       { id: user.id, email: user.email },
       { secret: refreshYamlCfg.secret, expiresIn: refreshYamlCfg.signOptions.expiresIn },
     );
 
     return {
       access_token,
-      refresh_token,
+      refresh_token: 'Bearer ' + refresh,
     };
   }
 }
