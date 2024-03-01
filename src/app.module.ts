@@ -19,6 +19,7 @@ import { RoleModule } from './main/role/role.module';
 import { PermissionModule } from './main/permission/permission.module';
 import { EmailModule } from './main/email/email.module';
 import { RedisModule } from './main/redis/redis.module';
+import { MenuModule } from './main/menu/menu.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { RedisModule } from './main/redis/redis.module';
     PermissionModule,
     EmailModule,
     RedisModule,
+    MenuModule,
   ],
   controllers: [AppController],
   providers: [
