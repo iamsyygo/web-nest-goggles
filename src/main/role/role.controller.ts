@@ -22,6 +22,13 @@ export class RoleController {
     return this.roleService.findList(pageQueryDto);
   }
 
+  @ApiOperation({ summary: '根据 ids 查询多个' })
+  @Get('/query-by-ids')
+  findByIds(@Query() ids: string) {
+    const dto = ids.split(',').map((id) => +id);
+    return this.roleService.findByIds(dto);
+  }
+
   @ApiOperation({ summary: '获取所有角色' })
   @Get()
   findAll() {

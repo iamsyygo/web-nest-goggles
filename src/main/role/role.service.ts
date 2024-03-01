@@ -3,7 +3,7 @@ import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { Role } from './entities/role.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { PageQueryRoleDto } from './dto/query-role.dto';
 
 @Injectable()
@@ -61,5 +61,10 @@ export class RoleService {
       take: pageSize,
     });
     return { list, total };
+  }
+
+  async findByIds(ids: number[]) {
+    const reslut = await this.roleRepo.findBy({ id: In(ids) });
+    return reslut;
   }
 }

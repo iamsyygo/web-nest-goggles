@@ -19,12 +19,12 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto, UpdateUserPasswordDto } from './dto/update-user.dto';
 import { UserService } from './user.service';
 import { SkipJwtPassport } from '../../decorator/skip-jwt-passport.decorator';
-import { PageQueryDto } from './dto/query-user.dto';
+import { PageQueryUserDto } from './dto/query-user.dto';
 import { JwtService } from '@nestjs/jwt';
 import { AppJwtRefreshAuthGuard } from '../../guard/jwt.refresh-passport.guard';
 import { ConfigService } from '@nestjs/config';
 
-@ApiTags('系统用户')
+@ApiTags('系统用户相关接口')
 @Controller('user')
 export class UserController {
   @Inject()
@@ -58,7 +58,7 @@ export class UserController {
   @ApiOperation({ description: '', summary: '用户列表查询' })
   @SkipJwtPassport()
   @Get('/list')
-  findList(@Query() pageQueryDto: PageQueryDto) {
+  findList(@Query() pageQueryDto: PageQueryUserDto) {
     return this.userService.findList(pageQueryDto);
   }
 

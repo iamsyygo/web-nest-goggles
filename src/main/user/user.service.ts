@@ -15,7 +15,7 @@ import { ConfigService } from '@nestjs/config';
 import { compare, hashSync } from 'bcryptjs';
 import { Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
-import { PageQueryDto } from './dto/query-user.dto';
+import { PageQueryUserDto } from './dto/query-user.dto';
 import { RedisService } from '../redis/redis.service';
 import { AppRedisKeyEnum } from '../../types/enum';
 
@@ -82,7 +82,7 @@ export class UserService {
     };
   }
 
-  async findList({ page = 1, pageSize = 10 }: PageQueryDto) {
+  async findList({ page = 1, pageSize = 10 }: PageQueryUserDto) {
     const [list, total] = await this.userRepo.findAndCount({
       skip: (page - 1) * pageSize,
       take: pageSize,

@@ -46,9 +46,17 @@ export class Permission {
     comment: '名称',
   })
   name: string;
+
   @Column({
     type: 'int',
     comment: '值',
   })
   value: number;
+
+  @Column({
+    type: 'varchar',
+    length: 100,
+    comment: '描述',
+  })
+  description: string;
 }
