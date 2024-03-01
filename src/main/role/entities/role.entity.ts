@@ -48,6 +48,19 @@ export class Role {
   })
   name: string;
 
+  @Column({
+    type: 'int',
+    comment: '名称',
+  })
+  value: number;
+
+  @Column({
+    type: 'varchar',
+    length: 100,
+    comment: '描述',
+  })
+  description: string;
+
   @ManyToMany(() => Permission)
   @JoinTable({
     name: 'role_permission_relation',
