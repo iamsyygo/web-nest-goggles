@@ -11,14 +11,18 @@ import {
   HttpException,
   Query,
   Inject,
+  UseGuards,
+  HttpStatus,
 } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto, UpdateUserPasswordDto } from './dto/update-user.dto';
 import { UserService } from './user.service';
 import { SkipJwtPassport } from '../../decorator/skip-jwt-passport.decorator';
 import { PageQueryDto } from './dto/query-user.dto';
 import { JwtService } from '@nestjs/jwt';
+import { AppJwtRefreshAuthGuard } from '../../guard/jwt.refresh-passport.guard';
+import { ConfigService } from '@nestjs/config';
 
 @ApiTags('系统用户')
 @Controller('user')
@@ -26,20 +30,23 @@ export class UserController {
   @Inject()
   private jwtService: JwtService;
 
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly configService: ConfigService,
+  ) {}
   @ApiOperation({ description: '', summary: '创建用户' })
   @SkipJwtPassport()
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+  @Post('/sign-up')
+  signUp(@Body() createUserDto: CreateUserDto) {
+    return this.userService.signUp(createUserDto);
   }
 
   @ApiOperation({ description: '', summary: '登录用户' })
   @SkipJwtPassport()
-  @Post('/login')
+  @Post('/sign-in')
   @HttpCode(200)
-  login(@Body() loginUserDto: CreateUserDto, @Request() req) {
-    return this.userService.login(loginUserDto, req);
+  signIn(@Body() loginUserDto: CreateUserDto, @Request() req) {
+    return this.userService.signIn(loginUserDto, req);
   }
 
   @ApiOperation({ description: '', summary: '获取所有的用户' })
@@ -80,10 +87,32 @@ export class UserController {
   }
 
   @ApiOperation({ description: '', summary: '刷新令牌' })
-  @Get('refresh-token')
-  async refreshToken(@Query('refresh_token') refreshToken: string) {
-    const results = this.jwtService.verify(refreshToken);
-    if (!results) throw new HttpException('refresh_token 无效，请重新登录', 401);
+  // @UseGuards(AppJwtRefreshAuthGuard)
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        refresh_token: {
+          type: 'string',
+          description: '刷新令牌',
+        },
+      },
+    },
+  })
+  @Post('refresh-token')
+  async refreshToken(@Body('refresh_token') refreshToken: string) {
+    let results: { id: any };
+    const refreshYamlCfg = this.configService.get('refresh_token') as AppYamlConfig['refresh_token'];
+    if (!refreshYamlCfg.secret) {
+      throw new HttpException('jwt.secret is required，服务端错误', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    try {
+      results = await this.jwtService.verifyAsync(refreshToken, {
+        secret: refreshYamlCfg.secret,
+      });
+    } catch (error) {
+      throw new HttpException('refresh_token 无效，请重新登录' + error, 401);
+    }
 
     const user = await this.userService.findOne(results.id);
     const { access_token, refresh_token } = await this.userService.getAppToken(user);

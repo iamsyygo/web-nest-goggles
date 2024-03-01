@@ -32,7 +32,7 @@ export class UserService {
     private jwtService: JwtService,
   ) {}
 
-  async create(createUserDto: CreateUserDto) {
+  async signUp(createUserDto: CreateUserDto) {
     const user = await this.userRepo.findOne({ where: { email: createUserDto.email } });
     if (!!user) throw new BadRequestException('用户名已存在');
 
@@ -55,7 +55,7 @@ export class UserService {
     return true;
   }
 
-  async login({ username, password, code }: CreateUserDto, req: Request) {
+  async signIn({ username, password, code }: CreateUserDto, req: Request) {
     const user = await this.userRepo.findOne({
       where: { username },
       relations: { roles: { permissions: true } },

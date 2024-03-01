@@ -19,23 +19,16 @@ export class EmailService {
 
   async sendQQEmail({ to, subject, html }: Mail.Options) {
     await this.transporter.sendMail({
-      from: {
-        name: '系统邮件',
-        address: this.emailConfig.auth.user,
-      },
+      from: { name: '系统邮件', address: this.emailConfig.auth.user },
       to,
       subject,
       html,
     });
   }
 
+  // A bug is: Header is not defined,solutions is upgrade node version greater than 18
   async sendResendEmail({ to, subject, html }) {
     const resend = new Resend(this.resendApiKey);
-    await resend.emails.send({
-      from: 'onboarding@resend.dev',
-      to,
-      subject,
-      html,
-    });
+    await resend.emails.send({ from: this.emailConfig.auth.user, to, subject, html });
   }
 }

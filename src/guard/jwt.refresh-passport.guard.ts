@@ -4,7 +4,7 @@ import { GqlExecutionContext } from '@nestjs/graphql';
 import { AuthGuard } from '@nestjs/passport';
 
 @Injectable()
-export class AppJwtAuthGuard extends AuthGuard('jwt') {
+export class AppJwtRefreshAuthGuard extends AuthGuard('jwt-refresh') {
   @Inject(Reflector) private readonly reflector: Reflector;
   getRequest(context: ExecutionContext) {
     const ctx = GqlExecutionContext.create(context);
@@ -12,15 +12,15 @@ export class AppJwtAuthGuard extends AuthGuard('jwt') {
   }
   handleRequest(err, user, info, context: ExecutionContext) {
     // routing metadata that does not require validation
-    const NO_NEET_JWT_AUTH = this.reflector.getAllAndOverride<boolean>('NO_NEET_JWT_AUTH', [
-      context.getClass(),
-      context.getHandler(),
-    ]);
+    // const NO_NEET_JWT_AUTH = this.reflector.getAllAndOverride<boolean>('NO_NEET_JWT_AUTH', [
+    //   context.getClass(),
+    //   context.getHandler(),
+    // ]);
 
-    if (NO_NEET_JWT_AUTH) return;
+    // if (NO_NEET_JWT_AUTH) return;
 
     // development not required verification token
-    if (process.env.NODE_ENV === 'development') return;
+    // if (process.env.NODE_ENV === 'development') return;
 
     if (err || !user) throw err || new UnauthorizedException('Unauthorized');
     return user;
