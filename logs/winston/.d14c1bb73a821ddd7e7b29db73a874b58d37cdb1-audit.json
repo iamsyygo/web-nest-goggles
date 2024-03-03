@@ -19,6 +19,21 @@
             "date": 1709213653211,
             "name": "/Volumes/aoe/web-design/meta/web-nest-goggles/logs/winston/2024-02-29.reject.log",
             "hash": "2f2f343db9e78e32fd9805aa23ba725f23be09761ac8fe85b90d65d5936263c5"
+        },
+        {
+            "date": 1709296197301,
+            "name": "/Volumes/aoe/web-design/meta/web-nest-goggles/logs/winston/2024-03-01.reject.log",
+            "hash": "c09d1911cca18359dd6df6a4b3caa356c481ced6b3a1efc19cfd2e59af3e00fc"
+        },
+        {
+            "date": 1709322959416,
+            "name": "/Volumes/aoe/web-design/meta/web-nest-goggles/logs/winston/2024-03-02.reject.log",
+            "hash": "4f2f007c1f0a3d5f4cf4d07f30ec877ccd1efb65845b625f0ff771d158d58944"
+        },
+        {
+            "date": 1709410358436,
+            "name": "/Volumes/aoe/web-design/meta/web-nest-goggles/logs/winston/2024-03-03.reject.log",
+            "hash": "c54ce956f2d514242353712cf34d6798ca2ca687845e19d9efb5979e53311038"
         }
     ],
     "hashType": "sha256"

@@ -4,10 +4,10 @@ import {} from '@nestjs/mapped-types';
 
 export class CreateUserDto {
   // @IsNotEmpty()
-  @MinLength(3, { message: '用户名长度不能小于3位' })
-  @MaxLength(20, { message: '用户名长度不能大于20位' })
-  @ApiProperty({ description: '用户名', example: 'admin' })
-  username: string;
+  // @MinLength(3, { message: '用户名长度不能小于3位' })
+  // @MaxLength(20, { message: '用户名长度不能大于20位' })
+  // @ApiProperty({ description: '用户名', example: 'admin' })
+  // username: string;
 
   @IsNotEmpty({ message: '邮箱不能为空' })
   @IsEmail({}, { message: '邮箱格式不正确' })

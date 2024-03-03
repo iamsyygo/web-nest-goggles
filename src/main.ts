@@ -35,7 +35,8 @@ async function bootstrap() {
     }),
   );
 
-  // app.enableCors();
+  // 允许请求头跨域
+  app.enableCors();
 
   await app.listen(application.port);
 

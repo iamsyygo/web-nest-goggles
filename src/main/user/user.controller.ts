@@ -13,6 +13,8 @@ import {
   Inject,
   UseGuards,
   HttpStatus,
+  Response,
+  Redirect,
 } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -23,6 +25,7 @@ import { PageQueryUserDto } from './dto/query-user.dto';
 import { JwtService } from '@nestjs/jwt';
 import { AppJwtRefreshAuthGuard } from '../../guard/jwt.refresh-passport.guard';
 import { ConfigService } from '@nestjs/config';
+import { Response as ResponseType } from 'express';
 
 @ApiTags('系统用户相关接口')
 @Controller('user')
@@ -121,5 +124,42 @@ export class UserController {
       access_token,
       refresh_token,
     };
+  }
+
+  // 🐛bug: client cannot redirect to github
+  // @ApiOperation({ description: '', summary: '登录 github' })
+  // @Get('sign-in/github')
+  // // @Redirect()
+  // signInGithub(@Query('redirect_uri') redirectUri: string = '', @Response() res: ResponseType) {
+  //   const githubYamlCfg = this.configService.get('github') as AppYamlConfig['github'];
+  //   const query = {
+  //     client_id: githubYamlCfg.client_id,
+  //     redirect_uri: redirectUri,
+  //     // scope: 'user:email',
+  //   };
+  //   const url = 'https://github.com/login/oauth/authorize';
+  //   const params = new URLSearchParams(query);
+
+  //   console.log(url + '?' + params);
+
+  //   res.redirect(url + '?' + params);
+  // }
+
+  @ApiOperation({ description: '', summary: '登录 github' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        code: {
+          type: 'string',
+          description: 'github code',
+        },
+      },
+    },
+  })
+  @Post('github-auth')
+  @SkipJwtPassport()
+  authGithub(@Body('code') code: string, @Request() req) {
+    return this.userService.authGithub(code, req);
   }
 }

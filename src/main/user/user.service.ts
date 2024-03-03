@@ -9,7 +9,7 @@ import {
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto, UpdateUserPasswordDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './entities/user.entity';
+import { PLATFORM_ENUM, User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import { compare, hashSync } from 'bcryptjs';
@@ -18,6 +18,7 @@ import { JwtService } from '@nestjs/jwt';
 import { PageQueryUserDto } from './dto/query-user.dto';
 import { RedisService } from '../redis/redis.service';
 import { AppRedisKeyEnum } from '../../types/enum';
+import axios from 'axios';
 
 @Injectable()
 export class UserService {
@@ -55,12 +56,12 @@ export class UserService {
     return true;
   }
 
-  async signIn({ username, password, code }: CreateUserDto, req: Request) {
+  async signIn({ email, password, code }: CreateUserDto, req: Request) {
     const user = await this.userRepo.findOne({
-      where: { username },
+      where: { email },
       relations: { roles: { permissions: true } },
     });
-    if (!user) throw new BadRequestException('用户名不存在');
+    if (!user) throw new BadRequestException('用户不存在');
 
     await this.onVerifyCode({ email: user.email, code, prefix: AppRedisKeyEnum.CAPTCHA });
 
@@ -69,7 +70,6 @@ export class UserService {
 
     const { access_token, refresh_token } = await this.getAppToken(user);
 
-    // @ts-ignore
     user.lastLoginIp = req.headers.host.split(':')[0];
     const u = await this.userRepo.save(user);
 
@@ -208,5 +208,55 @@ export class UserService {
       access_token,
       refresh_token: 'Bearer ' + refresh,
     };
+  }
+
+  // github 登录
+  async authGithub(code, req: Request) {
+    const githubYamlCfg = this.configService.get('github') as AppYamlConfig['github'];
+    const { client_id, client_secret } = githubYamlCfg;
+
+    if (!code) {
+      throw new BadRequestException('code 必填');
+    }
+    const query = new URLSearchParams({
+      client_id,
+      client_secret,
+      code,
+    }).toString();
+
+    const { data } = await axios.post('https://github.com/login/oauth/access_token?' + query, {
+      headers: {
+        Accept: 'application/json',
+      },
+    });
+
+    const access_token = new URLSearchParams(data).get('access_token');
+    if (!access_token) throw new BadRequestException('获取 access_token 失败');
+    const result = await axios.get('https://api.github.com/user', {
+      headers: {
+        Accept: 'application/json',
+        Authorization: 'token ' + access_token,
+      },
+    });
+
+    const user = await this.userRepo.findOne({ where: { platformId: result.data.node_id } });
+    const lastLoginIp = req.headers.host.split(':')[0];
+
+    if (!user?.platformId) {
+      const u = await this.userRepo.save({
+        username: result.data.login,
+        platform: PLATFORM_ENUM.GITHUB,
+        platformId: result.data.node_id,
+        lastLoginIp,
+      });
+      const { access_token: accesstoken, refresh_token } = await this.getAppToken(u);
+      delete u.password;
+      return { access_token: accesstoken, refresh_token, user: u };
+    }
+
+    const u = await this.userRepo.save({ ...user, lastLoginIp });
+    const { access_token: accesstoken, refresh_token } = await this.getAppToken(u);
+    delete u.password;
+    return { access_token: accesstoken, refresh_token, user: u };
   }
 }

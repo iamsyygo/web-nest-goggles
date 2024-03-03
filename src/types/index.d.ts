@@ -75,4 +75,8 @@ type AppYamlConfig = {
       pass: string;
     };
   };
+  github: {
+    client_id: string;
+    client_secret: string;
+  };
 };

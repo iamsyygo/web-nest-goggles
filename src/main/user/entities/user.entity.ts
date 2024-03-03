@@ -1,15 +1,14 @@
+import { Column, DeleteDateColumn, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { DataSexEnum, DataStatusEnum } from '../../../types/enum';
-import {
-  BeforeInsert,
-  Column,
-  DeleteDateColumn,
-  Entity,
-  Index,
-  JoinTable,
-  ManyToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
 import { Role } from '../../role/entities/role.entity';
+
+// platform 用户来源
+export enum PLATFORM_ENUM {
+  // 当前
+  CURRENT,
+  // GitHub
+  GITHUB,
+}
 
 // 示例：
 // https://juejin.cn/post/7100159206132547621?searchId=20240125143117C746E8C1354801836F0E#heading-5
@@ -75,6 +74,7 @@ export class User {
     // select: false,
     length: 80,
     comment: '密码',
+    nullable: true, // github 登录不需要密码
   })
   password: string;
 
@@ -100,6 +100,22 @@ export class User {
     nullable: true,
   })
   phoneNumber: string;
+
+  @Column({
+    type: 'enum',
+    enum: PLATFORM_ENUM,
+    default: PLATFORM_ENUM.CURRENT,
+    comment: '用户来源(所属平台)，0: 当前，1: GitHub',
+  })
+  platform: PLATFORM_ENUM;
+
+  @Column({
+    type: 'varchar',
+    length: 30,
+    comment: '平台标识',
+    nullable: true,
+  })
+  platformId: string;
 
   @Column({
     type: 'varchar',
