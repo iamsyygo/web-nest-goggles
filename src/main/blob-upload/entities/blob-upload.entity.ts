@@ -51,7 +51,7 @@ export class BlobUpload {
     type: 'varchar',
     // select: false,
     length: 500,
-    comment: '文件路径(vercel blob 路径)',
+    comment: '文件路径',
   })
   url: string;
 

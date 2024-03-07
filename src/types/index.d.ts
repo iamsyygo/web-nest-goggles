@@ -64,9 +64,6 @@ type AppYamlConfig = {
       maxFiles: string;
     };
   };
-  vercel: {
-    blob_read_write_token: string;
-  };
   email: {
     host: string;
     port: number;
