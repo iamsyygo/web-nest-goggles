@@ -1,9 +1,9 @@
 import { Controller } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { BlobUploadService } from './blob-upload.service';
+import { UploadService } from './upload.service';
 
 @ApiTags('文件上传相关接口')
-@Controller('blob-upload')
+@Controller('upload')
 export class BlobUploadController {
-  constructor(private readonly blobUploadService: BlobUploadService) {}
+  constructor(private readonly uploadService: UploadService) {}
 }

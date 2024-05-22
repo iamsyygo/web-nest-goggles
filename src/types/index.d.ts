@@ -6,33 +6,31 @@ type AppYamlConfig = {
     version: string;
     description: string;
   };
-  db: {
-    mysql: {
-      type: 'mysql';
-      host: string;
-      port: number;
-      username: string;
-      password: string;
-      database: string;
-      synchronize: boolean;
-      logging: boolean;
-      poolSize: number;
-      connectorPackage: string;
-    };
-    redis: {
-      host: string;
-      username: string;
-      port: number;
-      password: string;
-      db: number;
-      keyPrefix: string;
-      ttl: number;
-      family: number;
-      poolSize: number;
-      enableReadyCheck: boolean;
-      enableOfflineQueue: boolean;
-      // reconnectOnError: (err) => err.message.includes('READONLY')
-    };
+  mysql: {
+    type: 'mysql';
+    host: string;
+    port: number;
+    username: string;
+    password: string;
+    database: string;
+    synchronize: boolean;
+    logging: boolean;
+    poolSize: number;
+    connectorPackage: string;
+  };
+  redis: {
+    host: string;
+    username: string;
+    port: number;
+    password: string;
+    db: number;
+    keyPrefix: string;
+    ttl: number;
+    family: number;
+    poolSize: number;
+    enableReadyCheck: boolean;
+    enableOfflineQueue: boolean;
+    // reconnectOnError: (err) => err.message.includes('READONLY')
   };
 
   bcrypt: {

@@ -3,7 +3,7 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 export const setupSwagger = (app: INestApplication, path, application) => {
   const config = new DocumentBuilder()
-    .setTitle('<📖/> ' + application.name)
+    .setTitle(application.name)
     .setDescription(application.description)
     .setVersion(application.version)
     .addBearerAuth()

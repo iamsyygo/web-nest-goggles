@@ -6,10 +6,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
 export const JwtUseFactory = (configService: ConfigService): JwtModuleOptions => {
-  const jwtConfig = configService.get('jwt', {
-    secret: '',
-    signOptions: { expiresIn: '1d' },
-  }) as AppYamlConfig['jwt'] as JwtModuleOptions;
+  const jwtConfig = configService.get('jwt') as AppYamlConfig['jwt'] as JwtModuleOptions;
   return {
     secret: jwtConfig.secret,
     signOptions: {

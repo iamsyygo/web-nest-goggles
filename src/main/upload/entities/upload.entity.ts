@@ -1,8 +1,8 @@
 import { Column, DeleteDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { DataStatusEnum } from '../../../types/enum';
+import { DataStatusEnum } from '@/types/enum';
 
 @Entity()
-export class BlobUpload {
+export class Upload {
   @PrimaryGeneratedColumn()
   id: number;
 

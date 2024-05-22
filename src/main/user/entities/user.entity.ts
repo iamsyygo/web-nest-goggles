@@ -29,7 +29,7 @@ export class User {
 
   @Column({
     type: 'timestamp',
-    comment: '修改时间',
+    comment: '更新时间',
     onUpdate: 'CURRENT_TIMESTAMP',
     nullable: true,
     transformer: { from: (value: Date) => value, to: () => new Date() },
@@ -72,10 +72,9 @@ export class User {
 
   @Column({
     type: 'varchar',
-    // select: false,
     length: 80,
     comment: '密码',
-    nullable: true, // github 登录不需要密码
+    nullable: true,
   })
   password: string;
 

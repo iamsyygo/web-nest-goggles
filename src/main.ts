@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { NestFactory, repl } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
@@ -12,6 +11,8 @@ declare const module: any;
 
 async function bootstrap() {
   const now = Date.now();
+
+  // interactive command-line testing
   if (process.env.REPL == '1') {
     const replServer = await repl(AppModule);
     replServer.setupHistory('.repl_history', (err) => {
@@ -29,12 +30,12 @@ async function bootstrap() {
 
   app.useGlobalPipes(
     new ValidationPipe({
-      // 去除在类dto上不存在的字段
+      // 去除 dto 上不存在的字段
       whitelist: true,
     }),
   );
 
-  // 允许请求头跨域
+  // allow request headers to cross domains
   app.enableCors();
 
   await app.listen(application.port);
@@ -47,16 +48,17 @@ async function bootstrap() {
   // This can only return an IPv4 address
   const ipv4 = ip(getNetworkInterfaceName());
 
+  // app is ready
   consola.ready({
     message: `🥽 应用程序启动成功，运行在:`,
     badge: true,
   });
-  consola.success(`<🏄/> http://localhost:${application.port}`);
-  consola.success(`<🏄/> http://${ipv4}:${application.port}\n`);
+  consola.success(` http://localhost:${application.port}`);
+  consola.success(` http://${ipv4}:${application.port}\n`);
 
-  consola.start('📖 swagger 文档运行在:');
+  consola.start(' swagger documents run on:');
   consola.success(`http://localhost:${application.port}/docs`);
   consola.success(`http://${ipv4}:${application.port}/docs`);
-  consola.info(`⏱️  启动耗时${Date.now() - now}ms`);
+  consola.info(` startup period of ${Date.now() - now}ms`);
 }
 bootstrap();

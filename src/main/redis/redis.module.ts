@@ -13,7 +13,7 @@ import { ConfigService } from '@nestjs/config';
       inject: [ConfigService],
       provide: 'REDIS_CLIENT',
       async useFactory(configService) {
-        const socket = configService.get('db.redis') as AppYamlConfig['db']['redis'];
+        const socket = configService.get('redis') as AppYamlConfig['redis'];
         const client = createClient({ socket, username: socket.username, password: socket.password });
         await client.connect();
         return client;

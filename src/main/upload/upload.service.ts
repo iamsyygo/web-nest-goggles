@@ -2,18 +2,18 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { PageQueryDto } from './dto/query-blob-upload.dto';
-import { BlobUpload } from './entities/blob-upload.entity';
+import { PageQueryDto } from './dto/query-upload.dto';
+import { Upload } from './entities/upload.entity';
 
 @Injectable()
-export class BlobUploadService {
-  @InjectRepository(BlobUpload)
-  private readonly BlobUploadRepo: Repository<BlobUpload>;
+export class UploadService {
+  @InjectRepository(Upload)
+  private readonly UploadRepo: Repository<Upload>;
 
   constructor(private readonly configService: ConfigService) {}
 
   async findList({ page = 1, pageSize = 10 }: PageQueryDto) {
-    const [list, total] = await this.BlobUploadRepo.findAndCount({
+    const [list, total] = await this.UploadRepo.findAndCount({
       skip: (page - 1) * pageSize,
       take: pageSize,
       // withDeleted: true,
