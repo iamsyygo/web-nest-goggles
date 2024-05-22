@@ -20,6 +20,7 @@ import { PermissionModule } from '@/main/permission/permission.module';
 import { EmailModule } from '@/main/email/email.module';
 import { RedisModule } from '@/main/redis/redis.module';
 import { MenuModule } from '@/main/menu/menu.module';
+import { MiniprogramModule } from './main/miniprogram/miniprogram.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { MenuModule } from '@/main/menu/menu.module';
     EmailModule,
     RedisModule,
     MenuModule,
+    MiniprogramModule,
   ],
   controllers: [AppController],
   providers: [

@@ -94,7 +94,7 @@ export class UserService {
       meta: {
         page: +page,
         pageSize: +pageSize,
-        totalSize: Math.ceil(total / pageSize),
+        pageNum: Math.ceil(total / pageSize),
       },
     };
   }
