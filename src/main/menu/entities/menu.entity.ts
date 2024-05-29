@@ -51,25 +51,25 @@ export class Menu {
   })
   deleteDate: Date;
 
-  @Column({ comment: '菜单名称' })
+  @Column({ comment: '名称' })
   name: string;
 
-  @Column({ comment: '菜单编码(路由)' })
+  @Column({ comment: '路由' })
   path: string;
 
-  @Column({ comment: '菜单层级', default: 1 })
+  @Column({ comment: '层级', default: 1 })
   level: number;
 
-  @Column({ comment: '菜单所属菜单', nullable: true, type: 'varchar' })
-  parentId: number;
+  // @Column({ comment: '菜单所属菜单', nullable: true, type: 'varchar' })
+  // parentId: number;
 
-  @Column({ comment: '菜单描述', nullable: true })
+  @Column({ comment: '描述', nullable: true })
   description: string;
 
   @Column({ comment: '排序', nullable: true })
   sort: number;
 
-  @Column({ comment: '菜单图标', nullable: true })
+  @Column({ comment: '图标', nullable: true })
   icon: string;
 
   @ManyToMany(() => Role, (Role) => Role)

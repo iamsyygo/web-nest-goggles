@@ -20,7 +20,7 @@ export class AppJwtAuthGuard extends AuthGuard('jwt') {
     if (NO_NEET_JWT_AUTH) return;
 
     // development not required verification token
-    if (process.env.NODE_ENV === 'development') return;
+    // if (process.env.NODE_ENV === 'development') return;
 
     if (err || !user) throw err || new UnauthorizedException('Unauthorized');
     return user;

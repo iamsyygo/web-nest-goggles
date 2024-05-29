@@ -16,15 +16,15 @@ export class RoleService {
     const roleValuePresence = await this.roleRepo.findOne({
       where: { value: createRoleDto.value },
     });
-    if (!roleValuePresence?.id) {
+    if (roleValuePresence) {
       throw new BadRequestException('角色值已存在');
     }
-
     const roleNamePresence = await this.roleRepo.findOne({ where: { name: createRoleDto.name } });
-    if (!roleNamePresence?.id) {
+    if (roleNamePresence) {
       throw new BadRequestException('角色名称已存在');
     }
-    return await this.roleRepo.insert(createRoleDto);
+    await this.roleRepo.insert(createRoleDto);
+    return true;
   }
 
   async findAll() {

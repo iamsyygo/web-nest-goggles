@@ -21,6 +21,7 @@ import { EmailModule } from '@/main/email/email.module';
 import { RedisModule } from '@/main/redis/redis.module';
 import { MenuModule } from '@/main/menu/menu.module';
 import { MiniprogramModule } from './main/miniprogram/miniprogram.module';
+import { DatabaseModule } from './main/database/database.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { MiniprogramModule } from './main/miniprogram/miniprogram.module';
     RedisModule,
     MenuModule,
     MiniprogramModule,
+    DatabaseModule,
   ],
   controllers: [AppController],
   providers: [

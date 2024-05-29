@@ -3,11 +3,12 @@ import { CreateMenuDto } from './dto/create-menu.dto';
 import { UpdateMenuDto } from './dto/update-menu.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Menu } from './entities/menu.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { plainToClass } from 'class-transformer';
 import { RoleService } from '../role/role.service';
 import { Role } from '../role/entities/role.entity';
 import { QueryMenuTreeDto } from './dto/query-menu.dto';
+import { User } from '../user/entities/user.entity';
 
 @Injectable()
 export class MenuService {
@@ -16,30 +17,41 @@ export class MenuService {
     private menuRepository: Repository<Menu>,
     @InjectRepository(Role)
     private roleRepository: Repository<Role>,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
   ) {}
 
   async createMenu(createMenuDto: CreateMenuDto) {
-    const { roleIds } = createMenuDto;
-    const roles = await this.roleRepository.findByIds(roleIds.split(','));
-
+    const { roles } = createMenuDto;
+    let rolesData = [];
+    if (roles?.length) {
+      rolesData = await this.roleRepository.findBy({ id: In(roles) });
+    }
     const entities = plainToClass(Menu, {
       ...createMenuDto,
-      roles,
+      roles: rolesData,
     });
     return this.menuRepository.save(entities);
   }
 
-  async findMenuByRole(ids: number[]) {
-    if (!ids?.length) return [];
+  async findMenuByRole(user: User) {
+    if (!user?.id) return [];
+    // 查询用户的角色
+    const { roles } = await this.userRepository.findOne({
+      where: { id: user.id },
+      relations: ['roles'],
+    });
 
     const queryBuilder = this.menuRepository.createQueryBuilder('menu');
 
     // 根据多个角色 id 获取菜单列表
     const menus = await queryBuilder
-      .innerJoinAndSelect('menu.roles', 'role', 'role.id IN (:...roleIds)', { roleIds: ids })
-      .addOrderBy('menu.parentId, menu.sort', 'ASC') // 按照 parentId 和 order 排序
+      .innerJoinAndSelect('menu.roles', 'role', 'role.id IN (:...rids)', {
+        rids: roles.map(({ id }) => id),
+      })
+      .addOrderBy('menu.parent, menu.sort', 'ASC') // 按照 parentId 和 order 排序
       // 排除一些字段返回
-      .select(['menu.id', 'menu.parentId', 'menu.name', 'menu.path', 'menu.icon'])
+      .select(['menu.id', 'menu.parent', 'menu.name', 'menu.path', 'menu.icon'])
       .getMany();
 
     return this.createMenuHierarchy(menus);
@@ -62,14 +74,14 @@ export class MenuService {
       return '菜单不存在';
     }
 
-    const { roleIds } = dto;
-    const roles = await this.roleRepository.findByIds(roleIds.split(','));
+    const { roles } = dto;
+    const rolesData = await this.roleRepository.findBy({ id: In(roles) });
 
-    if (!roles.length) return '角色不存在';
+    if (!rolesData.length) return '角色不存在';
 
     const entities = plainToClass(Menu, {
       ...dto,
-      roles,
+      roles: rolesData,
     });
     return this.menuRepository.save(entities);
   }
@@ -90,8 +102,7 @@ export class MenuService {
       delete menu.roles;
       menuMap.set(menu.id, menu);
       pathMaps[menu.path] = menu;
-
-      const parentMenu = menuMap.get(menu.parentId);
+      const parentMenu = menu.parent && menuMap.get(menu.parent.id);
       if (parentMenu) {
         parentMenu.children ??= [];
         parentMenu.children.push(menu);

@@ -31,7 +31,7 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       // 去除 dto 上不存在的字段
-      whitelist: true,
+      // whitelist: true,
     }),
   );
 

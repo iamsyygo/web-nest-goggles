@@ -5,6 +5,7 @@ import { UpdateMenuDto } from './dto/update-menu.dto';
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { QueryMenuTreeDto } from './dto/query-menu.dto';
 import { User } from '../user/entities/user.entity';
+import { User as useUser } from '@/decorator/user.decorator';
 
 @ApiTags('系统菜单相关接口')
 @Controller('menu')
@@ -17,12 +18,12 @@ export class MenuController {
     return this.menuService.createMenu(createMenuDto);
   }
 
-  // @ApiOperation({ summary: '获取菜单树' })
-  // @ApiBody({ description: '角色 ids', type: QueryMenuTreeDto })
-  // @Post('menu-tree')
-  // findMenuTree(@Body() body: QueryMenuTreeDto, @User() user: any) {
-  //   return this.menuService.findMenuByRole(user.roles);
-  // }
+  @ApiOperation({ summary: '获取菜单树' })
+  @ApiBody({ description: '角色 ids', type: QueryMenuTreeDto })
+  @Post('menu-tree')
+  findMenuTree(@Body() body: QueryMenuTreeDto, @useUser() user: any) {
+    return this.menuService.findMenuByRole(user);
+  }
 
   @ApiOperation({ summary: '根据id获取菜单' })
   @Get(':id')

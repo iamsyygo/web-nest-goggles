@@ -28,6 +28,6 @@ export class CreateMenuDto {
   // @ApiProperty({ description: '菜单类型：1菜单、2按钮', default: 1 })
   // type: number;
 
-  @ApiProperty({ description: '权限: 1所有权限、2系统权限、3自定义权限', default: 1 })
-  roleIds: string;
+  @ApiProperty({ description: '权限: 1所有权限、2系统权限、3自定义权限', default: [1] })
+  roles: any[];
 }

@@ -6,9 +6,10 @@ import { Menu } from './entities/menu.entity';
 import { RoleService } from '../role/role.service';
 import { RoleModule } from '../role/role.module';
 import { Role } from '../role/entities/role.entity';
+import { User } from '../user/entities/user.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Menu, Role]), RoleModule],
+  imports: [TypeOrmModule.forFeature([Menu, Role, User]), RoleModule],
   controllers: [MenuController],
   providers: [MenuService, RoleService],
 })
