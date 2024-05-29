@@ -49,12 +49,33 @@ export class MenuService {
       .innerJoinAndSelect('menu.roles', 'role', 'role.id IN (:...rids)', {
         rids: roles.map(({ id }) => id),
       })
-      .addOrderBy('menu.parent, menu.sort', 'ASC') // 按照 parentId 和 order 排序
+      // .leftJoinAndSelect('menu.parent', 'parent')
+      .leftJoinAndSelect('menu.children', 'children')
+      .where('menu.parent IS NULL')
+      .addOrderBy('menu.sort', 'ASC')
       // 排除一些字段返回
-      .select(['menu.id', 'menu.parent', 'menu.name', 'menu.path', 'menu.icon'])
+      .select([
+        'menu.id',
+        'menu.name',
+        'menu.path',
+        'menu.icon',
+        'menu.sort',
+        'menu.description',
+        'menu.level',
+        'menu.status',
+        // 'children',
+        'children.id',
+        'children.name',
+        'children.path',
+        'children.icon',
+        'children.sort',
+        'children.description',
+        'children.level',
+        'children.status',
+      ])
       .getMany();
 
-    return this.createMenuHierarchy(menus);
+    return menus;
   }
 
   findOne(id: number) {

@@ -3,6 +3,7 @@ dist
 logs
 node_modules
 documentation
+deploy
 
 *.log
 npm-debug.log*
