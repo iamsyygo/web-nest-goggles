@@ -19,6 +19,7 @@ import { PageQueryUserDto } from './dto/query-user.dto';
 import { RedisService } from '../redis/redis.service';
 import { AppRedisKeyEnum } from '../../types/enum';
 import axios from 'axios';
+import { transformPageResult } from '@/utils';
 
 @Injectable()
 export class UserService {
@@ -83,20 +84,16 @@ export class UserService {
   }
 
   async findList({ page = 1, pageSize = 10 }: PageQueryUserDto) {
-    const [list, total] = await this.userRepo.findAndCount({
+    const results = await this.userRepo.findAndCount({
       skip: (page - 1) * pageSize,
       take: pageSize,
-      // withDeleted: true,
+      withDeleted: true,
     });
-    return {
-      list,
-      total,
-      meta: {
-        page: +page,
-        pageSize: +pageSize,
-        pageNum: Math.ceil(total / pageSize),
-      },
-    };
+    return transformPageResult({
+      results,
+      page,
+      pageSize,
+    });
   }
   findAll() {
     return this.userRepo.find();

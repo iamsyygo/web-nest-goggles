@@ -1,6 +1,7 @@
 import { Column, DeleteDateColumn, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { DataStatusEnum } from '../../../types/enum';
 import { Permission } from '../../permission/entities/permission.entity';
+import { Menu } from '@/main/menu/entities/menu.entity';
 
 @Entity()
 export class Role {
@@ -60,6 +61,12 @@ export class Role {
     comment: '描述',
   })
   description: string;
+
+  @ManyToMany(() => Menu, (Menu) => Menu)
+  @JoinTable({
+    name: 'menu_role_relation',
+  })
+  menus: Menu[];
 
   @ManyToMany(() => Permission)
   @JoinTable({

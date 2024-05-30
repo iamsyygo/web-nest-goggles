@@ -5,6 +5,7 @@ import { Permission } from './entities/permission.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { PageQueryPermissionDto } from './dto/query-permission.dto';
+import { transformPageResult } from '@/utils';
 
 @Injectable()
 export class PermissionService {
@@ -58,11 +59,15 @@ export class PermissionService {
 
   async findList(queryDto: PageQueryPermissionDto) {
     const { page = 1, pageSize = 10 } = queryDto;
-    const [list, total] = await this.permissionRepo.findAndCount({
+    const results = await this.permissionRepo.findAndCount({
       skip: (page - 1) * pageSize,
       take: pageSize,
     });
-    return { list, total };
+    return transformPageResult({
+      results,
+      page,
+      pageSize,
+    });
   }
 
   async findByIds(ids: number[]) {

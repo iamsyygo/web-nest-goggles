@@ -3,13 +3,20 @@ import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { Role } from './entities/role.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { In, Like, Repository } from 'typeorm';
 import { PageQueryRoleDto } from './dto/query-role.dto';
+import { transformPageResult } from '@/utils';
+import { Menu } from '../menu/entities/menu.entity';
+import { User } from '../user/entities/user.entity';
 
 @Injectable()
 export class RoleService {
   @InjectRepository(Role)
   private readonly roleRepo: Repository<Role>;
+  @InjectRepository(Menu)
+  private menuRepository: Repository<Menu>;
+  @InjectRepository(User)
+  private userRepository: Repository<User>;
 
   async create(createRoleDto: CreateRoleDto) {
     // 确保角色值名称唯一
@@ -55,16 +62,44 @@ export class RoleService {
   }
 
   async findList(queryDto: PageQueryRoleDto) {
-    const { page = 1, pageSize = 10 } = queryDto;
-    const [list, total] = await this.roleRepo.findAndCount({
+    const { page = 1, pageSize = 10, name } = queryDto;
+    const results = await this.roleRepo.findAndCount({
       skip: (page - 1) * pageSize,
       take: pageSize,
+      where: {
+        name: name ? Like(`%${name}%`) : Like('%%'),
+      },
+      withDeleted: true,
     });
-    return { list, total };
+    return transformPageResult({
+      results,
+      page,
+      pageSize,
+    });
   }
 
   async findByIds(ids: number[]) {
     const reslut = await this.roleRepo.findBy({ id: In(ids) });
     return reslut;
+  }
+
+  // 根据菜单id绑定角色
+  async bindRoleMenu(role: number, menuIds: number[]) {
+    const roleEntity = await this.roleRepo.findOne({
+      where: { id: role },
+    });
+    if (!roleEntity) {
+      throw new BadRequestException('角色不存在');
+    }
+
+    const menuEntities = await this.menuRepository.find({
+      where: { id: In(menuIds) },
+    });
+
+    if (!menuEntities.length) {
+      throw new BadRequestException('菜单不存在');
+    }
+    roleEntity.menus = menuEntities;
+    await this.roleRepo.save(roleEntity);
   }
 }

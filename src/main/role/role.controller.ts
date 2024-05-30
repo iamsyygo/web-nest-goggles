@@ -4,6 +4,7 @@ import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { PageQueryRoleDto } from './dto/query-role.dto';
+import { UpdateRole2MenuDto } from './dto/update-role2menu.dto';
 
 @ApiTags('系统角色相关接口')
 @Controller('role')
@@ -45,6 +46,12 @@ export class RoleController {
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateRoleDto: UpdateRoleDto) {
     return this.roleService.update(+id, updateRoleDto);
+  }
+
+  @ApiOperation({ summary: '更新角色菜单' })
+  @Post('role2menu')
+  bindRoleMenu(@Body() updateRole2MenuDto: UpdateRole2MenuDto) {
+    return this.roleService.bindRoleMenu(updateRole2MenuDto.role, updateRole2MenuDto.menuIds);
   }
 
   @ApiOperation({ summary: '删除角色' })

@@ -43,13 +43,15 @@ export class MenuService {
     });
 
     const queryBuilder = this.menuRepository.createQueryBuilder('menu');
+    const rids = roles.map(({ id }) => id);
 
-    // 根据多个角色 id 获取菜单列表
-    const menus = await queryBuilder
-      .innerJoinAndSelect('menu.roles', 'role', 'role.id IN (:...rids)', {
-        rids: roles.map(({ id }) => id),
-      })
-      // .leftJoinAndSelect('menu.parent', 'parent')
+    const mrs = await queryBuilder.innerJoinAndSelect('menu.roles', 'role', 'role.id IN (:...rids)', {
+      rids,
+    });
+
+    const menuData = await mrs.getMany();
+
+    const menuTree = await mrs
       .leftJoinAndSelect('menu.children', 'children')
       .where('menu.parent IS NULL')
       .addOrderBy('menu.sort', 'ASC')
@@ -75,7 +77,39 @@ export class MenuService {
       ])
       .getMany();
 
-    return menus;
+    // const menus = await queryBuilder
+    //   .innerJoinAndSelect('menu.roles', 'role', 'role.id IN (:...rids)', {
+    //     rids,
+    //   })
+    //   // .leftJoinAndSelect('menu.parent', 'parent')
+    //   .leftJoinAndSelect('menu.children', 'children')
+    //   .where('menu.parent IS NULL')
+    //   .addOrderBy('menu.sort', 'ASC')
+    //   // 排除一些字段返回
+    //   .select([
+    //     'menu.id',
+    //     'menu.name',
+    //     'menu.path',
+    //     'menu.icon',
+    //     'menu.sort',
+    //     'menu.description',
+    //     'menu.level',
+    //     'menu.status',
+    //     // 'children',
+    //     'children.id',
+    //     'children.name',
+    //     'children.path',
+    //     'children.icon',
+    //     'children.sort',
+    //     'children.description',
+    //     'children.level',
+    //     'children.status',
+    //   ])
+    //   .getMany();
+
+    const paths = menuData.map((menu) => menu.path);
+
+    return { menus: menuTree, paths };
   }
 
   findOne(id: number) {
@@ -135,5 +169,23 @@ export class MenuService {
       menus: menuTree,
       pathMaps,
     };
+  }
+
+  /**
+   * 根据角色 id 获取菜单列表
+   * @param roles
+   * @returns 菜单列表对象pathMaps
+   */
+  async findMenuByRoleIds(roles: number[]) {
+    const queryBuilder = this.menuRepository.createQueryBuilder('menu');
+    const menus = await queryBuilder
+      .innerJoinAndSelect('menu.roles', 'role', 'role.id IN (:...rids)', {
+        rids: roles,
+      })
+      .andWhere('menu.status = 1')
+      .select(['menu.id', 'menu.path'])
+      .getMany();
+
+    return menus.map((menu) => menu.path);
   }
 }

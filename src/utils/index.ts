@@ -1,5 +1,6 @@
+import { transformSchema } from '@nestjs/graphql';
 import { EntityClassOrSchema } from '@nestjs/typeorm/dist/interfaces/entity-class-or-schema.type';
-
+import { ObjectLiteral } from 'typeorm';
 /**
  * 获取系统网卡名称
  * @returns {string}
@@ -50,4 +51,29 @@ type SelectFields<T extends EntityClassOrSchema> = `!${keyof T & string}`[] | (k
 export function getSelect<T extends EntityClassOrSchema>(entity: T, fields: SelectFields<T>) {
   // const keys = Object.keys(entity) as SelectFields<T>;
   // return keys.filter((key) => fields.includes(key) || !fields.includes(`!${key}`));
+}
+
+interface PageResult<T = ObjectLiteral> {
+  results: [T[], number];
+  page: number;
+  pageSize: number;
+}
+
+// 返回统一的分页数据格式
+export function transformPageResult<T = ObjectLiteral>(val: PageResult<T>) {
+  const {
+    results: [list, total],
+    page,
+    pageSize,
+  } = val;
+
+  return {
+    list,
+    total,
+    meta: {
+      page: Number(page),
+      pageSize: Number(pageSize),
+      pages: Math.ceil(total / pageSize),
+    },
+  };
 }
