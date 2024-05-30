@@ -11,7 +11,7 @@ export class CreateMenuDto {
   level: number;
 
   @ApiProperty({ description: '菜单所属父菜单 id', required: false })
-  parentId: string;
+  parentId: number;
 
   @ApiProperty({ description: '菜单描述', required: false })
   description: string;

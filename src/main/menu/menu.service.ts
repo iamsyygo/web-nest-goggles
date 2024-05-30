@@ -21,17 +21,33 @@ export class MenuService {
     private userRepository: Repository<User>,
   ) {}
 
-  async createMenu(createMenuDto: CreateMenuDto) {
-    const { roles } = createMenuDto;
-    let rolesData = [];
+  async createMenu(dto: CreateMenuDto) {
+    const { roles } = dto;
+    let rdata = [];
     if (roles?.length) {
-      rolesData = await this.roleRepository.findBy({ id: In(roles) });
+      rdata = await this.roleRepository.findBy({ id: In(roles) });
     }
     const entities = plainToClass(Menu, {
-      ...createMenuDto,
-      roles: rolesData,
+      ...dto,
+      roles: rdata,
     });
-    return this.menuRepository.save(entities);
+
+    const mdata = await this.menuRepository.save(entities);
+
+    // if has parent menu, update parent menu children
+    let pplain: Menu = null;
+    if (dto.parentId) {
+      const parentMenu = await this.menuRepository.findOne({
+        where: { id: dto.parentId },
+      });
+      pplain = parentMenu;
+
+      // update parent menu children
+      parentMenu.children ??= [];
+      parentMenu.children.push(mdata);
+      await this.menuRepository.save(parentMenu);
+    }
+    return mdata;
   }
 
   async findMenuByRole(user: User) {

@@ -8,8 +8,8 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Role } from '../../role/entities/role.entity';
-import { DataStatusEnum } from '../../../types/enum';
+import { Role } from '@/main/role/entities/role.entity';
+import { DataStatusEnum } from '@/types/enum';
 
 @Entity('menu')
 export class Menu {
@@ -47,7 +47,6 @@ export class Menu {
     comment: '删除时间',
     nullable: true,
     default: null,
-    // transformer: { from: (value: Date) => value, to: () => new Date() },
   })
   deleteDate: Date;
 
@@ -59,9 +58,6 @@ export class Menu {
 
   @Column({ comment: '层级', default: 1 })
   level: number;
-
-  // @Column({ comment: '菜单所属菜单', nullable: true, type: 'varchar' })
-  // parentId: number;
 
   @Column({ comment: '描述', nullable: true })
   description: string;
