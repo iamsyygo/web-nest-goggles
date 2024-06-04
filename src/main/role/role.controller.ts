@@ -59,4 +59,10 @@ export class RoleController {
   remove(@Param('id') id: string) {
     return this.roleService.remove(+id);
   }
+
+  @ApiOperation({ summary: '根据实体保存' })
+  @Post('save')
+  save(@Body() entity: UpdateRoleDto & CreateRoleDto) {
+    return this.roleService.save(entity);
+  }
 }

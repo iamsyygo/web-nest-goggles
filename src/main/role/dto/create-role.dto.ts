@@ -9,5 +9,5 @@ export class CreateRoleDto {
   value: number;
 
   @ApiProperty({ description: '角色描述', example: '管理员' })
-  description: string;
+  description?: string;
 }

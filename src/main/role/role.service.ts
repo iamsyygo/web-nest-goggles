@@ -69,7 +69,7 @@ export class RoleService {
       where: {
         name: name ? Like(`%${name}%`) : Like('%%'),
       },
-      withDeleted: true,
+      withDeleted: false,
     });
     return transformPageResult({
       results,
@@ -102,5 +102,25 @@ export class RoleService {
     roleEntity.menus = menuEntities;
     await this.roleRepo.save(roleEntity);
     return true;
+  }
+
+  async save(entity: UpdateRoleDto & CreateRoleDto) {
+    const roleEntity = await this.roleRepo.findOne({
+      where: {
+        name: entity.name,
+        value: entity.value,
+      },
+    });
+    // if(roleEntity.name === entity.name && entity.id !== roleEntity.id) {
+    //   throw new BadRequestException('角色名称已存在');
+    // }
+
+    if (
+      (roleEntity?.name === entity.name || roleEntity?.value === entity.value) &&
+      entity.id !== roleEntity.id
+    ) {
+      throw new BadRequestException('角色名称或值已存在');
+    }
+    return this.roleRepo.save(entity);
   }
 }

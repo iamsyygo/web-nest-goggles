@@ -69,6 +69,12 @@ export class MenuService {
 
     const menuTree = await mrs
       .leftJoinAndSelect('menu.children', 'children')
+
+      // 过滤 children role != user role
+      .innerJoinAndSelect('children.roles', 'crole', 'crole.id IN (:...rids)', {
+        rids,
+      })
+
       .where('menu.parent IS NULL')
       .addOrderBy('menu.sort', 'ASC')
       // 排除一些字段返回
