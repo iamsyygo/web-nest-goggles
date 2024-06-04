@@ -46,6 +46,7 @@
     "dayjs": "^1.11.10",
     "js-yaml": "^4.1.0",
     "kysely": "^0.27.3",
+    "minio": "^8.0.0",
     "mysql2": "^3.6.5",
     "nest-winston": "^1.9.4",
     "nodemailer": "^6.9.10",

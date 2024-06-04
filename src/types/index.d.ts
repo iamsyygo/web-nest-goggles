@@ -32,6 +32,13 @@ type AppYamlConfig = {
     enableOfflineQueue: boolean;
     // reconnectOnError: (err) => err.message.includes('READONLY')
   };
+  minio: {
+    endPoint: string;
+    port: number;
+    useSSL: boolean;
+    accessKey: string;
+    secretKey: string;
+  };
 
   bcrypt: {
     salt: string;

@@ -21,7 +21,8 @@ import { EmailModule } from '@/main/email/email.module';
 import { RedisModule } from '@/main/redis/redis.module';
 import { MenuModule } from '@/main/menu/menu.module';
 import { MiniprogramModule } from './main/miniprogram/miniprogram.module';
-import { DatabaseModule } from './main/database/database.module';
+import { DatabaseModule } from '@/main/database/database.module';
+import { MinioModule } from '@/main/minio/minio.module';
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { DatabaseModule } from './main/database/database.module';
     PermissionModule,
     EmailModule,
     RedisModule,
+    MinioModule,
     MenuModule,
     MiniprogramModule,
     DatabaseModule,

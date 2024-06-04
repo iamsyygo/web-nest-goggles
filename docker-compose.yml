@@ -43,6 +43,8 @@ services:
             # - ./deploy/mysql/init:/docker-entrypoint-initdb.d/ # 存放初始化的脚本
         networks: 
             - network_server002
+    
+    # docker run --name minio-server -d -p 9000:9000 -p 9001:9001 -v D:\web-design\meta\web-nest-goggles\deploy\bitnami:/bitnami/minio/data --env MINIO_ROOT_USER="root" --env MINIO_ROOT_PASSWORD="12345678" bitnami/minio:latest
 
     nestjs002_s: # nestjs服务
         container_name: nestjs002

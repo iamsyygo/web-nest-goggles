@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { UploadService } from './upload.service';
-import { BlobUploadController } from './upload.controller';
+import { UploadController } from './upload.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Upload } from './entities/upload.entity';
 import { JwtModule } from '@nestjs/jwt';
@@ -15,7 +15,7 @@ import { JwtAuthStrategy, JwtUseFactory } from '@/config/jwt.config';
       useFactory: JwtUseFactory,
     }),
   ],
-  controllers: [BlobUploadController],
+  controllers: [UploadController],
   providers: [UploadService, JwtAuthStrategy],
 })
 export class UploadModule {}

@@ -1,5 +1,4 @@
 import { Column, DeleteDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { DataStatusEnum } from '@/types/enum';
 
 @Entity()
 export class Upload {
@@ -22,21 +21,20 @@ export class Upload {
   })
   updateDate: Date;
 
-  @Column({
-    type: 'enum',
-    comment: '状态',
-    default: DataStatusEnum.ENABLE,
-    enum: DataStatusEnum,
-    select: false,
-  })
-  status: DataStatusEnum;
+  // @Column({
+  //   type: 'enum',
+  //   comment: '状态',
+  //   default: DataStatusEnum.ENABLE,
+  //   enum: DataStatusEnum,
+  //   select: false,
+  // })
+  // status: DataStatusEnum;
 
   @DeleteDateColumn({
     type: 'timestamp',
     comment: '删除时间',
     default: null,
     nullable: true,
-    // transformer: { from: (value: Date) => value, to: () => new Date() },
   })
   deleteDate: Date;
 
@@ -49,44 +47,65 @@ export class Upload {
 
   @Column({
     type: 'varchar',
-    // select: false,
-    length: 500,
-    comment: '文件路径',
+    length: 30,
+    comment: '原文件名',
   })
-  url: string;
-
-  @Column({
-    type: 'varchar',
-    length: 500,
-    comment: '下载地址',
-  })
-  downloadUrl: string;
-
-  @Column({
-    type: 'varchar',
-    length: 500,
-    comment: '路径名',
-  })
-  pathname: string;
+  originalFileName: string;
 
   @Column({
     type: 'varchar',
     length: 30,
-    comment: '文件类型',
+    comment: '用户ID',
   })
-  contentType: string;
+  userId: string;
 
   @Column({
     type: 'varchar',
-    length: 500,
-    comment: 'contentDisposition',
+    length: 30,
+    comment: '用户名称',
   })
-  contentDisposition: string;
+  username: string;
 
-  @Column({
-    type: 'varchar',
-    length: 100,
-    comment: '文件大小',
-  })
-  size: number;
+  // @Column({
+  //   type: 'varchar',
+  //   // select: false,
+  //   length: 500,
+  //   comment: '文件路径',
+  // })
+  // url: string;
+
+  // @Column({
+  //   type: 'varchar',
+  //   length: 500,
+  //   comment: '下载地址',
+  // })
+  // downloadUrl: string;
+
+  // @Column({
+  //   type: 'varchar',
+  //   length: 500,
+  //   comment: '路径名',
+  // })
+  // pathname: string;
+
+  // @Column({
+  //   type: 'varchar',
+  //   length: 30,
+  //   comment: '文件类型',
+  // })
+  // contentType: string;
+
+  // @Column({
+  //   type: 'varchar',
+  //   length: 500,
+  //   comment: 'contentDisposition',
+  // })
+  // contentDisposition: string;
+
+  // @Column({
+  //   type: 'varchar',
+  //   length: 100,
+  //   comment: '文件大小',
+  // })
+  // size: number;
 }

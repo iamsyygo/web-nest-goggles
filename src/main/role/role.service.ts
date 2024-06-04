@@ -101,5 +101,6 @@ export class RoleService {
     }
     roleEntity.menus = menuEntities;
     await this.roleRepo.save(roleEntity);
+    return true;
   }
 }
