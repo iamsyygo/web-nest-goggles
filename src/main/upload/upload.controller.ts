@@ -6,6 +6,7 @@ import {
   Inject,
   MaxFileSizeValidator,
   ParseFilePipe,
+  Post,
   Put,
   Query,
   UploadedFile,
@@ -18,7 +19,7 @@ import { APP_MINIO } from '@/main/minio/minio.module';
 import { SkipJwtPassport } from '@/decorator/skip-jwt-passport.decorator';
 import { User as UseUser } from '@/decorator/user.decorator';
 import { User } from '../user/entities/user.entity';
-import { CreateUploadDto } from './dto/create-upload.dto';
+import { CreateUploadDto, CreateUploadInfoDto } from './dto/create-upload.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('文件上传相关接口')
@@ -28,11 +29,11 @@ export class UploadController {
   @Inject(APP_MINIO)
   private minioClient: Client;
 
-  @ApiOperation({ summary: '获取预签名URL' })
-  @Get('presigned')
-  presigned(@Query('name') name: string, @UseUser() user: User) {
-    return this.uploadService.setPresignedByPut(name, user);
-  }
+  // @ApiOperation({ summary: '获取预签名URL' })
+  // @Get('presigned')
+  // presigned(@Query('name') name: string, @UseUser() user: User) {
+  //   return this.uploadService.getFileUrl(name);
+  // }
 
   @ApiOperation({ summary: '上传文件至 oss' })
   @ApiConsumes('multipart/form-data')
@@ -55,6 +56,24 @@ export class UploadController {
     @UseUser() user: User,
   ) {
     return this.uploadService.uploadFile(file, user);
+  }
+
+  // 上传文件到 Minio
+  // const uploadResponse = await fetch(url, {
+  //   method: 'PUT',
+  //   body: file,
+  //   headers: { 'Content-Type': file.type },
+  // });
+  @ApiOperation({ summary: '根据文件名称获取 minio 上传 url' })
+  @Post('generate-url')
+  async generatePresignedUrl(@Body('filename') filename: string) {
+    return await this.uploadService.generatePresignedUrl(filename);
+  }
+
+  @ApiOperation({ summary: '成功上传文件后保存文件信息' })
+  @Post('store-data')
+  async storeFile(@Body() fileInfo: CreateUploadInfoDto) {
+    return await this.uploadService.save(fileInfo);
   }
 
   @ApiOperation({ summary: '删除文件' })

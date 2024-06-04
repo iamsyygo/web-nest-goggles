@@ -127,7 +127,7 @@ export class User {
 
   @Column({
     type: 'varchar',
-    length: 30,
+    length: 1000,
     comment: '头像',
     nullable: true,
   })

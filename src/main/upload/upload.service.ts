@@ -9,6 +9,7 @@ import { APP_MINIO } from '../minio/minio.module';
 import { Client } from 'minio';
 import { plainToClass } from 'class-transformer';
 import { User } from '../user/entities/user.entity';
+import { CreateUploadInfoDto } from './dto/create-upload.dto';
 
 @Injectable()
 export class UploadService {
@@ -28,7 +29,6 @@ export class UploadService {
     const results = await this.uploadRepo.findAndCount({
       skip: (page - 1) * pageSize,
       take: pageSize,
-      // withDeleted: true,
     });
     return transformPageResult({
       results,
@@ -37,57 +37,47 @@ export class UploadService {
     });
   }
 
-  // 上传文件至minio
-  async uploadFile(file: Express.Multer.File, user: User) {
-    try {
-      const fileName = `${Date.now()}-${file.originalname}`;
-      await this.minioClient.putObject(this.bucketName, fileName, file.buffer, file.size);
-      await this.saveUploadRecord(fileName, file.originalname, user);
-      return fileName;
-    } catch (error) {
-      console.error(error);
-      throw new Error('上传失败');
-    }
-  }
-
-  // 根据文件名获取 minio 文件的预签名URL
-  async getFileUrl(fileName: string) {
-    try {
-      return await this.minioClient.presignedUrl('GET', this.bucketName, fileName);
-    } catch (e) {
-      console.error(e);
-      return '获取预签名URL失败';
-    }
-  }
-
-  // 根据文件名删除 minio 文件
-  async deleteFile(fileName: string) {
-    await this.minioClient.removeObject(this.bucketName, fileName);
-    const results = await this.uploadRepo.delete({ fileName });
+  async deleteFile(objectName: string) {
+    await this.minioClient.removeObject(this.bucketName, objectName);
+    const results = await this.uploadRepo.delete({ objectName });
     return results.affected > 0;
   }
 
-  async setPresignedByPut(originalname: string, user: User) {
-    try {
-      const fileName = `${Date.now()}-${originalname}`;
-
-      // const url = await this.minioClient.presignedPutObject('goggles', name, 60 * 60 * 24);
-      const url = await this.minioClient.presignedPutObject(this.bucketName, fileName);
-      await this.saveUploadRecord(fileName, originalname, user);
-      return url;
-    } catch (e) {
-      console.error(e);
-      return '获取预签名URL失败';
-    }
+  async uploadFile(file: Express.Multer.File, user: User) {
+    const bucketName = this.bucketName;
+    const objectName = `${Date.now()}-${file.originalname}`;
+    const { etag } = await this.minioClient.putObject(bucketName, objectName, file.buffer, file.size, {
+      // 决定是预览还是下载
+      'Content-Type': file.mimetype,
+    });
+    const url = await this.getFileUrl(objectName);
+    const entity: CreateUploadInfoDto = {
+      etag,
+      objectName,
+      originalname: file.originalname,
+      url,
+      userId: user.id,
+      username: user.username,
+      size: file.size,
+      mimetype: file.mimetype,
+    };
+    await this.save(entity);
+    return entity;
   }
 
-  saveUploadRecord(fileName: string, originalFileName: string, user: User) {
-    const upload = plainToClass(Upload, {
-      username: user.username,
-      userId: user.id,
-      fileName,
-      originalFileName,
-    });
-    return this.uploadRepo.save(upload);
+  async getFileUrl(objectName: string) {
+    return this.minioClient.presignedGetObject(this.bucketName, objectName);
+  }
+
+  async generatePresignedUrl(filename: string) {
+    const bucketName = this.bucketName;
+    const objectName = `${Date.now()}-${filename}`;
+    return this.minioClient.presignedPutObject(bucketName, objectName);
+  }
+
+  async save(fileInfo: CreateUploadInfoDto) {
+    const entity = plainToClass(Upload, fileInfo);
+    await this.uploadRepo.save(entity);
+    return entity;
   }
 }
