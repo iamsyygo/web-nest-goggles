@@ -63,6 +63,7 @@ export class Upload {
     type: 'varchar',
     length: 30,
     comment: '用户名称',
+    nullable: true,
   })
   username: string;
 

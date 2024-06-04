@@ -7,6 +7,8 @@ import { Upload } from './entities/upload.entity';
 import { transformPageResult } from '@/utils';
 import { APP_MINIO } from '../minio/minio.module';
 import { Client } from 'minio';
+import { plainToClass } from 'class-transformer';
+import { User } from '../user/entities/user.entity';
 
 @Injectable()
 export class UploadService {
@@ -36,10 +38,11 @@ export class UploadService {
   }
 
   // 上传文件至minio
-  async uploadFile(file: Express.Multer.File) {
+  async uploadFile(file: Express.Multer.File, user: User) {
     try {
       const fileName = `${Date.now()}-${file.originalname}`;
       await this.minioClient.putObject(this.bucketName, fileName, file.buffer, file.size);
+      await this.saveUploadRecord(fileName, file.originalname, user);
       return fileName;
     } catch (error) {
       console.error(error);
@@ -60,22 +63,31 @@ export class UploadService {
   // 根据文件名删除 minio 文件
   async deleteFile(fileName: string) {
     await this.minioClient.removeObject(this.bucketName, fileName);
+    const results = await this.uploadRepo.delete({ fileName });
+    return results.affected > 0;
   }
 
-  async setPresignedByPut(fileName: string) {
+  async setPresignedByPut(originalname: string, user: User) {
     try {
+      const fileName = `${Date.now()}-${originalname}`;
+
       // const url = await this.minioClient.presignedPutObject('goggles', name, 60 * 60 * 24);
-      return await this.minioClient.presignedPutObject('goggles', fileName);
+      const url = await this.minioClient.presignedPutObject(this.bucketName, fileName);
+      await this.saveUploadRecord(fileName, originalname, user);
+      return url;
     } catch (e) {
       console.error(e);
       return '获取预签名URL失败';
     }
   }
 
-  saveUploadRecord(fileName: string, userId: number) {
-    return this.uploadRepo.save({
+  saveUploadRecord(fileName: string, originalFileName: string, user: User) {
+    const upload = plainToClass(Upload, {
+      username: user.username,
+      userId: user.id,
       fileName,
-      userId,
+      originalFileName,
     });
+    return this.uploadRepo.save(upload);
   }
 }
