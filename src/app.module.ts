@@ -23,6 +23,7 @@ import { MenuModule } from '@/main/menu/menu.module';
 import { MiniprogramModule } from './main/miniprogram/miniprogram.module';
 import { DatabaseModule } from '@/main/database/database.module';
 import { MinioModule } from '@/main/minio/minio.module';
+import { GithubModule } from './main/github/github.module';
 
 @Module({
   imports: [
@@ -53,6 +54,7 @@ import { MinioModule } from '@/main/minio/minio.module';
     MenuModule,
     MiniprogramModule,
     DatabaseModule,
+    GithubModule,
   ],
   controllers: [AppController],
   providers: [

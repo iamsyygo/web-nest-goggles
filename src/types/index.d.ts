@@ -80,5 +80,6 @@ type AppYamlConfig = {
   github: {
     client_id: string;
     client_secret: string;
+    access_token: string;
   };
 };
