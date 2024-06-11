@@ -6,10 +6,7 @@ import { UpdateDatabaseDto } from './dto/update-database.dto';
 
 @Injectable()
 export class DatabaseService {
-  constructor(
-    // @InjectConnection() private readonly connection: Connection,
-    @InjectDataSource() private readonly dataSource: DataSource,
-  ) {}
+  constructor(@InjectDataSource() private readonly dataSource: DataSource) {}
 
   create(createDatabaseDto: CreateDatabaseDto) {
     return 'This action adds a new database';
@@ -17,9 +14,12 @@ export class DatabaseService {
 
   async findAll() {
     const queryRunner = this.dataSource.createQueryRunner();
-    const tables = await queryRunner.getTables();
+    // const tables = await queryRunner.query('SELECT * FROM information_schema.tables');
+    const tables = await queryRunner.query(
+      "SELECT * FROM information_schema.tables WHERE table_schema = 'goggles-dev'",
+    );
     await queryRunner.release();
-    return tables.map((table) => table.name);
+    return tables;
   }
 
   findOne(id: number) {

@@ -256,4 +256,17 @@ export class UserService {
     delete u.password;
     return { access_token: accesstoken, refresh_token, user: u };
   }
+
+  // 前 x 个月的用户注册量,与用户注册量统计
+  async registerCount(count = 6) {
+    const total = await this.userRepo.count();
+    const results = await this.userRepo.query(
+      `SELECT COUNT(*) as count, DATE_FORMAT(create_date, '%Y-%m') as date FROM user WHERE create_date >= DATE_SUB(CURDATE(), INTERVAL ? MONTH) GROUP BY DATE_FORMAT(create_date, '%Y-%m') ORDER BY date DESC`,
+      [count],
+    );
+    return {
+      total,
+      results,
+    };
+  }
 }

@@ -11,4 +11,3 @@ export class QueryGithubCommitsDto {
 }
 
 export class QueryGithubRepoDto extends PickType(QueryGithubCommitsDto, ['owner'] as const) {}
-Add Github module to app module

@@ -162,4 +162,11 @@ export class UserController {
   authGithub(@Body('code') code: string, @Request() req) {
     return this.userService.authGithub(code, req);
   }
+
+  @ApiOperation({ description: '', summary: '获取前 x 个月的用户注册量' })
+  @SkipJwtPassport()
+  @Post('/register-count')
+  registerCount() {
+    return this.userService.registerCount();
+  }
 }
