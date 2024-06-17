@@ -35,18 +35,18 @@ export class MenuService {
     const mdata = await this.menuRepository.save(entities);
 
     // if has parent menu, update parent menu children
-    let pplain: Menu = null;
-    if (dto.parentId) {
-      const parentMenu = await this.menuRepository.findOne({
-        where: { id: dto.parentId },
-      });
-      pplain = parentMenu;
+    // let pplain: Menu = null;
+    // if (dto.parentId) {
+    //   const parentMenu = await this.menuRepository.findOne({
+    //     where: { id: dto.parentId },
+    //   });
+    //   pplain = parentMenu;
 
-      // update parent menu children
-      parentMenu.children ??= [];
-      parentMenu.children.push(mdata);
-      await this.menuRepository.save(parentMenu);
-    }
+    //   // update parent menu children
+    //   parentMenu.children ??= [];
+    //   parentMenu.children.push(mdata);
+    //   await this.menuRepository.save(parentMenu);
+    // }
     return mdata;
   }
 
@@ -69,14 +69,13 @@ export class MenuService {
 
     const menuTree = await mrs
       .leftJoinAndSelect('menu.children', 'children')
-
       // 过滤 children role != user role
       .innerJoinAndSelect('children.roles', 'crole', 'crole.id IN (:...rids)', {
         rids,
       })
-
+      // 添加字段 children.parent_id = menu.id
       .where('menu.parent IS NULL')
-      .addOrderBy('menu.sort', 'ASC')
+      .addOrderBy('menu.sort', 'DESC')
       // 排除一些字段返回
       .select([
         'menu.id',
@@ -98,46 +97,14 @@ export class MenuService {
         'children.status',
       ])
       .getMany();
-
-    // const menus = await queryBuilder
-    //   .innerJoinAndSelect('menu.roles', 'role', 'role.id IN (:...rids)', {
-    //     rids,
-    //   })
-    //   // .leftJoinAndSelect('menu.parent', 'parent')
-    //   .leftJoinAndSelect('menu.children', 'children')
-    //   .where('menu.parent IS NULL')
-    //   .addOrderBy('menu.sort', 'ASC')
-    //   // 排除一些字段返回
-    //   .select([
-    //     'menu.id',
-    //     'menu.name',
-    //     'menu.path',
-    //     'menu.icon',
-    //     'menu.sort',
-    //     'menu.description',
-    //     'menu.level',
-    //     'menu.status',
-    //     // 'children',
-    //     'children.id',
-    //     'children.name',
-    //     'children.path',
-    //     'children.icon',
-    //     'children.sort',
-    //     'children.description',
-    //     'children.level',
-    //     'children.status',
-    //   ])
-    //   .getMany();
-
     const paths = menuData.map((menu) => menu.path);
-
     return { menus: menuTree, paths };
   }
 
   findOne(id: number) {
     return this.menuRepository.findOne({
       where: { id },
-      relations: ['roles'],
+      relations: ['roles', 'parent'],
     });
   }
 

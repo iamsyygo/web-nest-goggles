@@ -33,4 +33,14 @@ export class DatabaseService {
   remove(id: number) {
     return `This action removes a #${id} database`;
   }
+
+  // 通过表名查询表结构
+  async findTableStructure(tableName: string, tableSchema: string = 'goggles-dev') {
+    const queryRunner = this.dataSource.createQueryRunner();
+    const columns = await queryRunner.query(
+      `SELECT * FROM information_schema.columns WHERE table_schema = '${tableSchema}' AND table_name = '${tableName}'`,
+    );
+    await queryRunner.release();
+    return columns;
+  }
 }

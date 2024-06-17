@@ -77,8 +77,13 @@ export class Menu {
   @ManyToOne(() => Menu, (Menu) => Menu.children, {
     onDelete: 'CASCADE', // 级联删除
     createForeignKeyConstraints: true, // 取消外键约束
+    // eager: true, // 自动查询，比如查询父级菜单时，会自动查询子级菜单
+    // cascade: true, // 级联保存，比如保存父级菜单时，会自动保存子级菜单
   })
   parent: Menu;
+
+  @Column({ nullable: true, comment: '父级菜单id' })
+  parentId: number;
 
   @OneToMany(() => Menu, (Menu) => Menu.parent)
   children: Menu[];
