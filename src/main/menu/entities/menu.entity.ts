@@ -38,7 +38,6 @@ export class Menu {
     comment: '状态',
     default: DataStatusEnum.ENABLE,
     enum: DataStatusEnum,
-    select: false,
   })
   status: DataStatusEnum;
 
@@ -47,6 +46,7 @@ export class Menu {
     comment: '删除时间',
     nullable: true,
     default: null,
+    select: false,
   })
   deleteDate: Date;
 

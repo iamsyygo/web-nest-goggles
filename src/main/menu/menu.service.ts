@@ -146,7 +146,7 @@ export class MenuService {
       delete menu.roles;
       menuMap.set(menu.id, menu);
       pathMaps[menu.path] = menu;
-      const parentMenu = menu.parent && menuMap.get(menu.parent.id);
+      const parentMenu = menu.parentId && menuMap.get(menu.parentId);
       if (parentMenu) {
         parentMenu.children ??= [];
         parentMenu.children.push(menu);
@@ -158,6 +158,28 @@ export class MenuService {
       menus: menuTree,
       pathMaps,
     };
+  }
+
+  // v2 获取菜单树
+  async findMenuTree(user: User) {
+    if (!user?.id) throw new Error('用户不存在！');
+    // 查询用户的角色
+    const { roles } = await this.userRepository.findOne({
+      where: { id: user.id },
+      relations: ['roles'],
+    });
+
+    const queryBuilder = this.menuRepository.createQueryBuilder('menu');
+    const rids = roles.map(({ id }) => id);
+
+    const mrs = await queryBuilder.innerJoinAndSelect('menu.roles', 'role', 'role.id IN (:...rids)', {
+      rids,
+    });
+    const menuData = await mrs.getMany();
+
+    const { menus, pathMaps } = this.createMenuHierarchy(menuData);
+
+    return { menus, paths: pathMaps };
   }
 
   /**

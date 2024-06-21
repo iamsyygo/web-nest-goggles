@@ -21,8 +21,14 @@ export class MenuController {
   @ApiOperation({ summary: '获取菜单树' })
   @ApiBody({ description: '角色 ids', type: QueryMenuTreeDto })
   @Post('menu-tree')
-  findMenuTree(@Body() body: QueryMenuTreeDto, @useUser() user: any) {
+  findMenuTree(@useUser() user: any) {
     return this.menuService.findMenuByRole(user);
+  }
+
+  @ApiOperation({ summary: 'v2 获取菜单树' })
+  @Post('find-menu-tree')
+  findMenuTreeV2(@useUser() user: any) {
+    return this.menuService.findMenuTree(user);
   }
 
   @ApiOperation({ summary: '根据id获取菜单' })

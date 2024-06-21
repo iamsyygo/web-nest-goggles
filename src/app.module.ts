@@ -25,6 +25,7 @@ import { DatabaseModule } from '@/main/database/database.module';
 import { MinioModule } from '@/main/minio/minio.module';
 import { GithubModule } from './main/github/github.module';
 import { BookmarksModule } from './main/bookmarks/bookmarks.module';
+import { DictModule } from './main/dict/dict.module';
 
 @Module({
   imports: [
@@ -57,6 +58,7 @@ import { BookmarksModule } from './main/bookmarks/bookmarks.module';
     DatabaseModule,
     GithubModule,
     BookmarksModule,
+    DictModule,
   ],
   controllers: [AppController],
   providers: [

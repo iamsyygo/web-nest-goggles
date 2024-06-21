@@ -2,7 +2,9 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { MiniprogramService } from './miniprogram.service';
 import { CreateMiniprogramDto } from './dto/create-miniprogram.dto';
 import { UpdateMiniprogramDto } from './dto/update-miniprogram.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('小程序相关接口')
 @Controller('miniprogram')
 export class MiniprogramController {
   constructor(private readonly miniprogramService: MiniprogramService) {}
