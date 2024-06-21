@@ -39,9 +39,19 @@ $ pnpm run start
 # 监视模式
 $ pnpm run start:dev
 
+# HRM webapck 热更新
+$ pnpm run dev
+
 # 生产模式
 $ pnpm run start:prod
 ```
+
+## 已有接口预览
+
+**目前已有 60+ 接口，包括登录、角色、用户、权限、菜单、字典和文件上传等**
+
+![alt text](./assets/api1.png)
+![alt text](./assets/api2.png)
 
 ## 测试
 
@@ -55,36 +65,6 @@ $ pnpm run test:e2e
 # 测试覆盖率
 $ pnpm run test:cov
 ```
-
-
-## Vercel 部署
-在 Vercel 上部署 NestJS 并不是默认的场景。它需要一点魔法一个 vercel.json 文件，它负责在项目中配置和覆盖 Vercel 的默认行为，为项目自定义 Vercel 的行为。
-1、根目录下创建一个 vercel.json
-```json
-{
-  "version": 2,
-  "builds": [
-    {
-      "src": "src/main.ts",
-      "use": "@vercel/node"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "src/main.ts",
-      "methods": ["GET", "POST", "PUT", "DELETE"]
-    }
-  ]
-}
-```
-
-2、线上数据库采用[railway](https://railway.app/project/4c1e2c89-e769-4c75-afd1-3ccd033b3cc2/service/de9706e5-d3b9-428b-9436-aa00fedb359f/settings)
-客户端连接时记得开启 SSL
-也可以是 [planetscale](https://auth.planetscale.com/sign-up)
-
-一些 bug 解决方案：
-- [vercel 路径问题](https://github.com/orgs/vercel/discussions/2323)
 
 ## 支持
 
