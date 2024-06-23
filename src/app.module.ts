@@ -26,6 +26,7 @@ import { MinioModule } from '@/main/minio/minio.module';
 import { GithubModule } from './main/github/github.module';
 import { BookmarksModule } from './main/bookmarks/bookmarks.module';
 import { DictModule } from './main/dict/dict.module';
+import { LoggerModule } from './main/logger/logger.module';
 
 @Module({
   imports: [
@@ -59,6 +60,7 @@ import { DictModule } from './main/dict/dict.module';
     GithubModule,
     BookmarksModule,
     DictModule,
+    LoggerModule,
   ],
   controllers: [AppController],
   providers: [
