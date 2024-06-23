@@ -1,3 +1,4 @@
+import { JWT_IGNORE_FLAG } from '@/utils/metadataKey';
 import { ExecutionContext, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { GqlExecutionContext } from '@nestjs/graphql';
@@ -12,12 +13,12 @@ export class AppJwtAuthGuard extends AuthGuard('jwt') {
   }
   handleRequest(err, user, info, context: ExecutionContext) {
     // routing metadata that does not require validation
-    const NO_NEET_JWT_AUTH = this.reflector.getAllAndOverride<boolean>('NO_NEET_JWT_AUTH', [
+    const isIgnore = this.reflector.getAllAndOverride<boolean>(JWT_IGNORE_FLAG, [
       context.getClass(),
       context.getHandler(),
     ]);
 
-    if (NO_NEET_JWT_AUTH) return;
+    if (isIgnore) return;
 
     // development not required verification token
     // if (process.env.NODE_ENV === 'development') return;
