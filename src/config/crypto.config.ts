@@ -10,6 +10,7 @@ import {
 } from 'node:crypto';
 
 // RSA Algorithm(非对称加密)
+// @ts-expect-error
 const { privateKey, publicKey } = generateKeyPairSync('rsa', {
   moduleLength: 1024, // 密钥长度。长度越长安全性越高，但是加密解密速度越慢
 });

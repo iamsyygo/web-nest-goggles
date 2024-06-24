@@ -10,27 +10,17 @@ export class LoggerController {
   constructor(private readonly loggerService: LoggerService) {}
 
   @Post()
-  create(@Body() createLoggerDto: CreateLoggerDto) {
-    return this.loggerService.create(createLoggerDto);
-  }
+  create(@Body() createLoggerDto: CreateLoggerDto) {}
 
   @Get()
-  findAll() {
-    return this.loggerService.findAll();
-  }
+  findAll() {}
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.loggerService.findOne(+id);
-  }
+  findOne(@Param('id') id: string) {}
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateLoggerDto: UpdateLoggerDto) {
-    return this.loggerService.update(+id, updateLoggerDto);
-  }
+  update(@Param('id') id: string, @Body() updateLoggerDto: UpdateLoggerDto) {}
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.loggerService.remove(+id);
-  }
+  remove(@Param('id') id: string) {}
 }

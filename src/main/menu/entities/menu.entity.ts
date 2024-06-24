@@ -11,6 +11,7 @@ import {
 import { Role } from '@/main/role/entities/role.entity';
 import { DataStatusEnum } from '@/types/enum';
 
+// https://juejin.cn/book/7226988578700525605/section/7339111792662020108
 @Entity('menu')
 export class Menu {
   @PrimaryGeneratedColumn()

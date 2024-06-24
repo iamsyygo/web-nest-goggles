@@ -1,26 +1,23 @@
-import { Injectable } from '@nestjs/common';
-import { CreateLoggerDto } from './dto/create-logger.dto';
-import { UpdateLoggerDto } from './dto/update-logger.dto';
+import { Injectable, ConsoleLogger, LoggerService as _LoggerService, LogLevel } from '@nestjs/common';
+import { Logger, createLogger } from 'winston';
 
 @Injectable()
-export class LoggerService {
-  create(createLoggerDto: CreateLoggerDto) {
-    return 'This action adds a new logger';
+export class LoggerService implements _LoggerService {
+  private readonly logger: Logger;
+
+  constructor(options) {
+    this.logger = createLogger(options);
   }
 
-  findAll() {
-    return `This action returns all logger`;
+  log(message: string, context: string) {
+    this.logger.log('info', `[${context}] ${message}`);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} logger`;
+  error(message: string, context: string) {
+    this.logger.log('error', `[${context}] ${message}`);
   }
 
-  update(id: number, updateLoggerDto: UpdateLoggerDto) {
-    return `This action updates a #${id} logger`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} logger`;
+  warn(message: string, context: string) {
+    this.logger.log('warn', `[${context}] ${message}`);
   }
 }
