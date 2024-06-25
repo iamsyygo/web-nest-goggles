@@ -34,8 +34,12 @@ export const winstonUseFactory = (
         level,
         format: winston.format.combine(
           winston.format.printf((info) => {
-            const log = `[${info.level}] - [${info.date}] ${info.method}:${info.path}
-message: ${info.message}`;
+            // 加粗
+            const nest = chalk.bold('[Nest]');
+            // 灰色
+            const date = chalk.gray(info.date);
+            const log = `${nest} ${date}  {${info.path}, ${info.method}} route
+${info.level}: ${info.message}`;
 
             if (info.level === 'error') {
               const firstStack = parse(info.exception)[0];

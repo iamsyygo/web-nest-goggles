@@ -1,5 +1,4 @@
 import { parse } from '@/utils/stack-trace';
-import { parseErrorMessage } from '../utils';
 import * as requestIp from 'request-ip';
 import {
   ArgumentsHost,
@@ -10,11 +9,11 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { Inject } from '@nestjs/common/decorators';
-import * as chalk from 'chalk';
 import * as dayjs from 'dayjs';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';
 import { isErrored } from 'winston-daily-rotate-file';
+import { Request } from 'express';
 
 /**
  * Custom exception filter
@@ -28,10 +27,10 @@ export class AppExceptionFilter implements ExceptionFilter {
 
   catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
+    // const ctxType = host.getType();
     const status = exception.getStatus?.() || HttpStatus.INTERNAL_SERVER_ERROR;
     const request = ctx.getRequest();
     const response = ctx.getResponse();
-
     const { ip, method, path } = request;
     const userAgent = request.headers['user-agent'];
     const clientIp = requestIp.getClientIp(ip) || ip;

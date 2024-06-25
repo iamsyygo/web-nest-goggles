@@ -4,6 +4,7 @@ import { CreateLoggerDto } from './dto/create-logger.dto';
 import { UpdateLoggerDto } from './dto/update-logger.dto';
 import { ApiTags } from '@nestjs/swagger';
 
+// https://chatgpt.com/share/a5f5d8a7-ea31-447e-898d-c0ac4606dba2 日志记录模块实具体方案
 @ApiTags('日志记录模块')
 @Controller('logger')
 export class LoggerController {
