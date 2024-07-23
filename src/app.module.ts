@@ -28,6 +28,7 @@ import { BookmarksModule } from '@/main/bookmarks/bookmarks.module';
 import { DictModule } from '@/main/dict/dict.module';
 import { ConfigModule as SysConfigModule } from '@/main/sys-config/config.module';
 // import { LoggerModule } from './main/logger/logger.module';
+import { LightweightCodeModule } from './main/lightweight-code/lightweight-code.module';
 
 @Module({
   imports: [
@@ -62,6 +63,7 @@ import { ConfigModule as SysConfigModule } from '@/main/sys-config/config.module
     BookmarksModule,
     DictModule,
     SysConfigModule,
+    LightweightCodeModule,
   ],
   controllers: [AppController],
   providers: [
