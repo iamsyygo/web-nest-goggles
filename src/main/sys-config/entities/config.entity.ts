@@ -30,7 +30,6 @@ export class Config {
     comment: '状态',
     default: DataStatusEnum.ENABLE,
     enum: DataStatusEnum,
-    select: false,
   })
   status: DataStatusEnum;
 
@@ -50,15 +49,16 @@ export class Config {
   name: string;
 
   @Column({
-    type: 'int',
+    type: 'varchar',
     comment: '值',
   })
-  value: number;
+  value: string;
 
   @Column({
     type: 'varchar',
     length: 100,
     comment: '描述',
+    nullable: true,
   })
   description: string;
 }

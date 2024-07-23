@@ -28,7 +28,6 @@ export class Bookmark {
     comment: '状态',
     default: DataStatusEnum.ENABLE,
     enum: DataStatusEnum,
-    select: false,
   })
   status: DataStatusEnum;
 

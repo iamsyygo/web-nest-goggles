@@ -1,0 +1,2086 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/api/user/sign-up": {
+      "post": {
+        "operationId": "UserController_signUp",
+        "summary": "创建用户",
+        "description": "",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["系统用户相关接口"]
+      }
+    },
+    "/api/user/sign-in": {
+      "post": {
+        "operationId": "UserController_signIn",
+        "summary": "登录用户",
+        "description": "",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": ["系统用户相关接口"]
+      }
+    },
+    "/api/user": {
+      "get": {
+        "operationId": "UserController_findAll",
+        "summary": "获取所有的用户",
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": ["系统用户相关接口"]
+      }
+    },
+    "/api/user/list": {
+      "get": {
+        "operationId": "UserController_findList",
+        "summary": "用户列表查询",
+        "description": "",
+        "parameters": [
+          {
+            "name": "page",
+            "required": true,
+            "in": "query",
+            "description": "页码",
+            "example": 1,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": true,
+            "in": "query",
+            "description": "每页数量",
+            "example": 10,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": ["系统用户相关接口"]
+      }
+    },
+    "/api/user/{id}": {
+      "get": {
+        "operationId": "UserController_findOne",
+        "summary": "根据 id 查询",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["系统用户相关接口"]
+      },
+      "patch": {
+        "operationId": "UserController_update",
+        "summary": "更新用户",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["系统用户相关接口"]
+      },
+      "delete": {
+        "operationId": "UserController_remove",
+        "summary": "删除用户",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["系统用户相关接口"]
+      }
+    },
+    "/api/user/updated-key/{id}": {
+      "patch": {
+        "operationId": "UserController_updatePassword",
+        "summary": "更新用户密码",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserPasswordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["系统用户相关接口"]
+      }
+    },
+    "/api/user/refresh-token": {
+      "post": {
+        "operationId": "UserController_refreshToken",
+        "summary": "刷新令牌",
+        "description": "",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "refresh_token": {
+                    "type": "string",
+                    "description": "刷新令牌"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": ["系统用户相关接口"]
+      }
+    },
+    "/api/user/github-auth": {
+      "post": {
+        "operationId": "UserController_authGithub",
+        "summary": "登录 github",
+        "description": "",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "code": {
+                    "type": "string",
+                    "description": "github code"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["系统用户相关接口"]
+      }
+    },
+    "/api/upload": {
+      "put": {
+        "operationId": "UploadController_upload",
+        "summary": "上传文件至 oss",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "description": "上传文件",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUploadDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateUploadInfoDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["文件上传相关接口"]
+      }
+    },
+    "/api/upload/generate-url": {
+      "post": {
+        "operationId": "UploadController_generatePresignedUrl",
+        "summary": "根据文件名称获取 minio 上传 url",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["文件上传相关接口"]
+      }
+    },
+    "/api/upload/store-data": {
+      "post": {
+        "operationId": "UploadController_storeFile",
+        "summary": "成功上传文件后保存文件信息",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUploadInfoDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Upload"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["文件上传相关接口"]
+      }
+    },
+    "/api/upload/delete": {
+      "put": {
+        "operationId": "UploadController_delete",
+        "summary": "删除文件",
+        "parameters": [
+          {
+            "name": "name",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["文件上传相关接口"]
+      }
+    },
+    "/api/role": {
+      "post": {
+        "operationId": "RoleController_create",
+        "summary": "创建角色",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRoleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["系统角色相关接口"]
+      },
+      "get": {
+        "operationId": "RoleController_findAll",
+        "summary": "获取所有角色",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Role"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": ["系统角色相关接口"]
+      }
+    },
+    "/api/role/list": {
+      "get": {
+        "operationId": "RoleController_findList",
+        "summary": "分页获取角色",
+        "parameters": [
+          {
+            "name": "page",
+            "required": true,
+            "in": "query",
+            "description": "页码",
+            "example": 1,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": true,
+            "in": "query",
+            "description": "每页数量",
+            "example": 10,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "name",
+            "required": true,
+            "in": "query",
+            "description": "名称",
+            "example": 10,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": ["系统角色相关接口"]
+      }
+    },
+    "/api/role/query-by-ids": {
+      "get": {
+        "operationId": "RoleController_findByIds",
+        "summary": "根据 ids 查询多个",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Role"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": ["系统角色相关接口"]
+      }
+    },
+    "/api/role/{id}": {
+      "get": {
+        "operationId": "RoleController_findOne",
+        "summary": "获取单个角色",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Role"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["系统角色相关接口"]
+      },
+      "patch": {
+        "operationId": "RoleController_update",
+        "summary": "更新角色",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateRoleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["系统角色相关接口"]
+      },
+      "delete": {
+        "operationId": "RoleController_remove",
+        "summary": "删除角色",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["系统角色相关接口"]
+      }
+    },
+    "/api/role/role2menu": {
+      "post": {
+        "operationId": "RoleController_bindRoleMenu",
+        "summary": "更新角色菜单",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateRole2MenuDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["系统角色相关接口"]
+      }
+    },
+    "/api/role/save": {
+      "post": {
+        "operationId": "RoleController_save",
+        "summary": "根据实体保存",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["系统角色相关接口"]
+      }
+    },
+    "/api/permission": {
+      "post": {
+        "operationId": "PermissionController_create",
+        "summary": "创建权限",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePermissionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": ["系统权限相关接口"]
+      },
+      "get": {
+        "operationId": "PermissionController_findAll",
+        "summary": "获取所有权限",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Permission"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": ["系统权限相关接口"]
+      }
+    },
+    "/api/permission/list": {
+      "get": {
+        "operationId": "PermissionController_findList",
+        "summary": "分页获取权限",
+        "parameters": [
+          {
+            "name": "page",
+            "required": true,
+            "in": "query",
+            "description": "页码",
+            "example": 1,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": true,
+            "in": "query",
+            "description": "每页数量",
+            "example": 10,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": ["系统权限相关接口"]
+      }
+    },
+    "/api/permission/query-by-ids": {
+      "get": {
+        "operationId": "PermissionController_findByIds",
+        "summary": "根据 ids 查询多个",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Permission"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": ["系统权限相关接口"]
+      }
+    },
+    "/api/permission/{id}": {
+      "get": {
+        "operationId": "PermissionController_findOne",
+        "summary": "获取单个权限",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Permission"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["系统权限相关接口"]
+      },
+      "patch": {
+        "operationId": "PermissionController_update",
+        "summary": "更新权限",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePermissionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["系统权限相关接口"]
+      },
+      "delete": {
+        "operationId": "PermissionController_remove",
+        "summary": "删除权限",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["系统权限相关接口"]
+      }
+    },
+    "/api/email/qq-code": {
+      "get": {
+        "operationId": "EmailController_sendQQEmailCode",
+        "summary": "发送邮件验证码",
+        "parameters": [
+          {
+            "name": "email",
+            "required": true,
+            "in": "query",
+            "description": "邮箱",
+            "example": "268303068722@qq.com",
+            "schema": {}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["邮箱相关接口"]
+      }
+    },
+    "/api/email/resend-code": {
+      "get": {
+        "operationId": "EmailController_sendResendEmailCode",
+        "summary": "发送Resend验证码",
+        "parameters": [
+          {
+            "name": "email",
+            "required": true,
+            "in": "query",
+            "description": "邮箱",
+            "example": "268303068722@qq.com",
+            "schema": {}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["邮箱相关接口"]
+      }
+    },
+    "/api/menu/create": {
+      "post": {
+        "operationId": "MenuController_create",
+        "summary": "创建菜单",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMenuDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Menu"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["系统菜单相关接口"]
+      }
+    },
+    "/api/menu/menu-tree": {
+      "post": {
+        "operationId": "MenuController_findMenuTree",
+        "summary": "获取菜单树",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "description": "角色 ids",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QueryMenuTreeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["系统菜单相关接口"]
+      }
+    },
+    "/api/menu/{id}": {
+      "get": {
+        "operationId": "MenuController_findOne",
+        "summary": "根据id获取菜单",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Menu"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["系统菜单相关接口"]
+      },
+      "patch": {
+        "operationId": "MenuController_update",
+        "summary": "根据id更新菜单",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMenuDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["系统菜单相关接口"]
+      },
+      "delete": {
+        "operationId": "MenuController_remove",
+        "summary": "根据id删除菜单",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["系统菜单相关接口"]
+      }
+    },
+    "/api/miniprogram": {
+      "post": {
+        "operationId": "MiniprogramController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMiniprogramDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "MiniprogramController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/miniprogram/{id}": {
+      "get": {
+        "operationId": "MiniprogramController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "MiniprogramController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMiniprogramDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "MiniprogramController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/database": {
+      "post": {
+        "operationId": "DatabaseController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateDatabaseDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "DatabaseController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/database/{id}": {
+      "get": {
+        "operationId": "DatabaseController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "DatabaseController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateDatabaseDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "DatabaseController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "info": {
+    "title": "web-nest-goggles",
+    "description": "back-office services built with nestjs.",
+    "version": "0.0.1",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "CreateUserDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "邮箱",
+            "example": "2683030687@qq.com"
+          },
+          "code": {
+            "type": "string",
+            "description": "验证码",
+            "example": "123456"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 20,
+            "description": "密码",
+            "example": "12345690"
+          }
+        },
+        "required": ["email", "code", "password"]
+      },
+      "Menu": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "createTime": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updateTime": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "status": {
+            "enum": [2, 1, 0],
+            "type": "number"
+          },
+          "deleteDate": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "level": {
+            "type": "number"
+          },
+          "description": {
+            "type": "string"
+          },
+          "sort": {
+            "type": "number"
+          },
+          "icon": {
+            "type": "string"
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Role"
+            }
+          },
+          "parent": {
+            "$ref": "#/components/schemas/Menu"
+          },
+          "children": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Menu"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "createTime",
+          "updateTime",
+          "status",
+          "deleteDate",
+          "name",
+          "path",
+          "level",
+          "description",
+          "sort",
+          "icon",
+          "roles",
+          "parent",
+          "children"
+        ]
+      },
+      "Permission": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "createDate": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updateDate": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "status": {
+            "enum": [2, 1, 0],
+            "type": "number"
+          },
+          "deleteDate": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "value": {
+            "type": "number"
+          },
+          "description": {
+            "type": "string"
+          }
+        },
+        "required": ["id", "createDate", "updateDate", "status", "deleteDate", "name", "value", "description"]
+      },
+      "Role": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "createDate": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updateDate": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "status": {
+            "enum": [2, 1, 0],
+            "type": "number"
+          },
+          "deleteDate": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "value": {
+            "type": "number"
+          },
+          "description": {
+            "type": "string"
+          },
+          "menus": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Menu"
+            }
+          },
+          "permissions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Permission"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "createDate",
+          "updateDate",
+          "status",
+          "deleteDate",
+          "name",
+          "value",
+          "description",
+          "menus",
+          "permissions"
+        ]
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "createDate": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updateDate": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "status": {
+            "enum": [2, 1, 0],
+            "type": "number"
+          },
+          "deleteDate": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "gender": {
+            "enum": [1, 2, 3],
+            "type": "number"
+          },
+          "username": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "phoneNumber": {
+            "type": "string"
+          },
+          "platform": {
+            "enum": [0, 1],
+            "type": "number"
+          },
+          "platformId": {
+            "type": "string"
+          },
+          "bio": {
+            "type": "string"
+          },
+          "avatar": {
+            "type": "string"
+          },
+          "socialLinks": {
+            "type": "string"
+          },
+          "lastLoginIp": {
+            "type": "string"
+          },
+          "lastLoginDate": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Role"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "createDate",
+          "updateDate",
+          "status",
+          "deleteDate",
+          "gender",
+          "username",
+          "password",
+          "email",
+          "phoneNumber",
+          "platform",
+          "platformId",
+          "bio",
+          "avatar",
+          "socialLinks",
+          "lastLoginIp",
+          "lastLoginDate",
+          "roles"
+        ]
+      },
+      "UpdateUserDto": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "验证码",
+            "example": "123456"
+          },
+          "id": {
+            "type": "number"
+          },
+          "status": {
+            "type": "number",
+            "enum": [2, 1, 0]
+          },
+          "deleteDate": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "gender": {
+            "type": "number",
+            "enum": [1, 2, 3]
+          },
+          "username": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "phoneNumber": {
+            "type": "string"
+          },
+          "platform": {
+            "type": "number",
+            "enum": [0, 1]
+          },
+          "platformId": {
+            "type": "string"
+          },
+          "bio": {
+            "type": "string"
+          },
+          "avatar": {
+            "type": "string"
+          },
+          "socialLinks": {
+            "type": "string"
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Role"
+            }
+          }
+        },
+        "required": ["code"]
+      },
+      "UpdateUserPasswordDto": {
+        "type": "object",
+        "properties": {
+          "oldPassword": {
+            "type": "string",
+            "description": "旧密码",
+            "example": "123456"
+          },
+          "newPassword": {
+            "type": "string",
+            "description": "新密码",
+            "example": "123456"
+          },
+          "confirmPassword": {
+            "type": "string",
+            "description": "确认密码",
+            "example": "123456"
+          },
+          "code": {
+            "type": "string",
+            "description": "验证码",
+            "example": "123456"
+          }
+        },
+        "required": ["oldPassword", "newPassword", "confirmPassword", "code"]
+      },
+      "CreateUploadDto": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "type": "file",
+            "format": "binary"
+          }
+        },
+        "required": ["file"]
+      },
+      "CreateUploadInfoDto": {
+        "type": "object",
+        "properties": {
+          "etag": {
+            "type": "etag",
+            "format": "string",
+            "description": "etag 信息"
+          },
+          "objectName": {
+            "type": "objectName",
+            "format": "string",
+            "description": "文件名"
+          },
+          "originalname": {
+            "type": "originalname",
+            "format": "string",
+            "description": "原文件名"
+          },
+          "url": {
+            "type": "url",
+            "format": "string",
+            "description": "minio 地址"
+          },
+          "mimetype": {
+            "type": "mimetype",
+            "format": "string",
+            "description": "文件类型"
+          },
+          "size": {
+            "type": "size",
+            "format": "number",
+            "description": "文件大小"
+          },
+          "userId": {
+            "type": "number"
+          },
+          "username": {
+            "type": "string"
+          }
+        },
+        "required": ["objectName", "originalname", "url"]
+      },
+      "Upload": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "createDate": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updateDate": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "deleteDate": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "objectName": {
+            "type": "string"
+          },
+          "etag": {
+            "type": "string"
+          },
+          "originalname": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "mimetype": {
+            "type": "string"
+          },
+          "size": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "createDate",
+          "updateDate",
+          "deleteDate",
+          "objectName",
+          "etag",
+          "originalname",
+          "userId",
+          "username",
+          "url",
+          "mimetype",
+          "size"
+        ]
+      },
+      "CreateRoleDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "角色名称",
+            "example": "admin"
+          },
+          "value": {
+            "type": "number",
+            "description": "角色值",
+            "example": 1
+          },
+          "description": {
+            "type": "string",
+            "description": "角色描述",
+            "example": "管理员"
+          }
+        },
+        "required": ["name", "value"]
+      },
+      "UpdateRoleDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "角色名称",
+            "example": "admin"
+          },
+          "value": {
+            "type": "number",
+            "description": "角色值",
+            "example": 1
+          },
+          "description": {
+            "type": "string",
+            "description": "角色描述",
+            "example": "管理员"
+          },
+          "id": {
+            "type": "number",
+            "description": "角色 id"
+          }
+        }
+      },
+      "UpdateRole2MenuDto": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "number",
+            "description": "角色 id",
+            "example": 1
+          },
+          "menuIds": {
+            "description": "菜单 id 列表",
+            "example": [2, 3, 4],
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          }
+        },
+        "required": ["role", "menuIds"]
+      },
+      "CreatePermissionDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "角色名称",
+            "example": "admin"
+          },
+          "value": {
+            "type": "number",
+            "description": "角色值",
+            "example": 1
+          },
+          "description": {
+            "type": "string",
+            "description": "角色描述",
+            "example": "管理员"
+          }
+        },
+        "required": ["name", "value", "description"]
+      },
+      "UpdatePermissionDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "角色名称",
+            "example": "admin"
+          },
+          "value": {
+            "type": "number",
+            "description": "角色值",
+            "example": 1
+          },
+          "description": {
+            "type": "string",
+            "description": "角色描述",
+            "example": "管理员"
+          }
+        }
+      },
+      "CreateMenuDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "菜单名称"
+          },
+          "path": {
+            "type": "string",
+            "description": "菜单编码(路由)"
+          },
+          "level": {
+            "type": "number",
+            "description": "菜单层级",
+            "default": 1
+          },
+          "parentId": {
+            "type": "number",
+            "description": "菜单所属父菜单 id"
+          },
+          "description": {
+            "type": "string",
+            "description": "菜单描述"
+          },
+          "sort": {
+            "type": "number",
+            "description": "排序"
+          },
+          "status": {
+            "type": "number",
+            "description": "状态：1启用、0禁用",
+            "default": 1
+          },
+          "icon": {
+            "type": "string",
+            "description": "菜单图标"
+          },
+          "roles": {
+            "description": "权限: 1所有权限、2系统权限、3自定义权限",
+            "default": [1],
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        },
+        "required": ["name", "path", "level", "roles"]
+      },
+      "QueryMenuTreeDto": {
+        "type": "object",
+        "properties": {
+          "ids": {
+            "description": "角色 ids",
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          }
+        },
+        "required": ["ids"]
+      },
+      "UpdateMenuDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "菜单名称"
+          },
+          "path": {
+            "type": "string",
+            "description": "菜单编码(路由)"
+          },
+          "level": {
+            "type": "number",
+            "description": "菜单层级",
+            "default": 1
+          },
+          "parentId": {
+            "type": "number",
+            "description": "菜单所属父菜单 id"
+          },
+          "description": {
+            "type": "string",
+            "description": "菜单描述"
+          },
+          "sort": {
+            "type": "number",
+            "description": "排序"
+          },
+          "status": {
+            "type": "number",
+            "description": "状态：1启用、0禁用",
+            "default": 1
+          },
+          "icon": {
+            "type": "string",
+            "description": "菜单图标"
+          },
+          "roles": {
+            "description": "权限: 1所有权限、2系统权限、3自定义权限",
+            "default": [1],
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "id": {
+            "type": "number",
+            "description": "菜单 id"
+          }
+        },
+        "required": ["id"]
+      },
+      "CreateMiniprogramDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "UpdateMiniprogramDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "CreateDatabaseDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "UpdateDatabaseDto": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  }
+}

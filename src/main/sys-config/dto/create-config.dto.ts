@@ -6,7 +6,7 @@ export class CreateConfigDto {
   name: string;
 
   @ApiProperty({ description: '配置值', example: 1 })
-  value: number;
+  value: string;
 
   @ApiProperty({ description: '配置描述', example: '管理员' })
   description?: string;

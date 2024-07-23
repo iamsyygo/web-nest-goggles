@@ -20,10 +20,11 @@ export class AppJwtAuthGuard extends AuthGuard('jwt') {
 
     if (isIgnore) return;
 
-    // development not required verification token
-    // if (process.env.NODE_ENV === 'development') return;
-
-    if (err || !user) throw err || new UnauthorizedException('Unauthorized');
+    if (err || !user) {
+      // development not required verification token
+      // if (process.env.NODE_ENV === 'development') return;
+      throw err || new UnauthorizedException('Unauthorized');
+    }
     return user;
   }
   // 获取身份验证选项
