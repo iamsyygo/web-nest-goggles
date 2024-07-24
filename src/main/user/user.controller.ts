@@ -4,8 +4,8 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { ConfigService } from '@nestjs/config';
 
-@ApiTags('系统用户相关接口 v2')
-@Controller('/v2/user')
+@ApiTags('系统用户相关接口')
+@Controller('')
 export class UserController {
   @Inject()
   private jwtService: JwtService;

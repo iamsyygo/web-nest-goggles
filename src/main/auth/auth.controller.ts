@@ -1,6 +1,6 @@
 import { IsJwtPublic } from '@/decorator/is-jwt-public.decorator';
 import { Body, Controller, HttpCode, Post, Request, UseGuards } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Request as Req } from 'express';
 import { AuthService } from './auth.service';
 import { SignupDto } from './dto/create-auth.dto';
@@ -23,6 +23,17 @@ export class AuthController {
 
   @ApiOperation({ description: '', summary: '登录用户' })
   @UseGuards(LocalAuthGuard)
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        username: { type: 'string', description: '用户名' },
+        password: { type: 'string', description: '密码' },
+        email: { type: 'string', description: '邮箱' },
+        code: { type: 'string', description: '验证码' },
+      },
+    },
+  })
   @Post('signin')
   @IsJwtPublic()
   @HttpCode(200)
@@ -39,6 +50,14 @@ export class AuthController {
   }
 
   @ApiOperation({ description: '', summary: '刷新令牌' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        refreshToken: { type: 'string', description: '刷新令牌' },
+      },
+    },
+  })
   @Post('refresh')
   @IsJwtPublic()
   async refreshToken(@Body('refreshToken') refreshToken: string) {
