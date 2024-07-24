@@ -29,6 +29,9 @@ import { DictModule } from '@/main/dict/dict.module';
 import { ConfigModule as SysConfigModule } from '@/main/sys-config/config.module';
 // import { LoggerModule } from './main/logger/logger.module';
 import { LightweightCodeModule } from './main/lightweight-code/lightweight-code.module';
+import { AuthModule } from '@/main/auth/auth.module';
+import { UserModuleV2 } from './main/userv2/user.module';
+import { JwtAuthGuard } from '@/guard/jwt-auth.guard';
 
 @Module({
   imports: [
@@ -64,6 +67,8 @@ import { LightweightCodeModule } from './main/lightweight-code/lightweight-code.
     DictModule,
     SysConfigModule,
     LightweightCodeModule,
+    AuthModule,
+    UserModuleV2,
   ],
   controllers: [AppController],
   providers: [
@@ -73,7 +78,8 @@ import { LightweightCodeModule } from './main/lightweight-code/lightweight-code.
     //   provide: AppEnum.REDIS,
     //   useFactory: redisUseFactory,
     // },
-    { provide: APP_GUARD, useClass: AppJwtAuthGuard },
+    // { provide: APP_GUARD, useClass: AppJwtAuthGuard },
+    { provide: APP_GUARD, useClass: JwtAuthGuard },
     { provide: APP_FILTER, useClass: AppExceptionFilter },
     { provide: APP_INTERCEPTOR, useClass: AppResponseInterceptor },
   ],

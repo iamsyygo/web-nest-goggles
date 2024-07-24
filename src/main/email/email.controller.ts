@@ -3,7 +3,7 @@ import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { RedisService } from '../redis/redis.service';
 import { EmailService } from './email.service';
 import { AppRedisKeyEnum } from '../../types/enum';
-import { SkipJwtPassport } from '../../decorator/skip-jwt-passport.decorator';
+import { IsJwtPublic } from '@/decorator/is-jwt-public.decorator';
 
 @ApiTags('邮箱相关接口')
 @Controller('email')
@@ -14,7 +14,7 @@ export class EmailController {
 
   @ApiOperation({ summary: '发送邮件验证码' })
   @ApiQuery({ name: 'email', required: true, description: '邮箱', example: '268303068722@qq.com' })
-  @SkipJwtPassport()
+  @IsJwtPublic()
   @Get('qq-code')
   async sendQQEmailCode(@Query('email') email) {
     const code = await this.handleCaptcha(email);
@@ -33,7 +33,7 @@ export class EmailController {
 
   @ApiOperation({ summary: '发送Resend验证码' })
   @ApiQuery({ name: 'email', required: true, description: '邮箱', example: '268303068722@qq.com' })
-  @SkipJwtPassport()
+  @IsJwtPublic()
   @Get('resend-code')
   async sendResendEmailCode(@Query('email') email) {
     const code = await this.handleCaptcha(email);

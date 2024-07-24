@@ -171,13 +171,13 @@ export class UserService {
   //   if (redisCode !== code) throw new BadRequestException('验证码不正确');
   //   return true;
   // }
-  async onVerifyCode(value: { email: string; ctrsCode: string; prefix: string }) {
-    const { email, ctrsCode, prefix = AppRedisKeyEnum.CAPTCHA } = value;
-    const code = await this.redisService.get(prefix + email);
-    if (!code) {
+  async onVerifyCode(value: { email: string; code: string; prefix?: string }) {
+    const { email, code, prefix = AppRedisKeyEnum.CAPTCHA } = value;
+    const c = await this.redisService.get(prefix + email);
+    if (!c) {
       throw new UnauthorizedException('验证码已失效');
     }
-    if (ctrsCode !== code) {
+    if (code !== c) {
       throw new UnauthorizedException('验证码不正确');
     }
     return true;

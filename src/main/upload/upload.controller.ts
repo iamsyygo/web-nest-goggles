@@ -16,7 +16,6 @@ import { ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UploadService } from './upload.service';
 import { Client } from 'minio';
 import { APP_MINIO } from '@/main/minio/minio.module';
-import { SkipJwtPassport } from '@/decorator/skip-jwt-passport.decorator';
 import { User as UseUser } from '@/decorator/user.decorator';
 import { User } from '../user/entities/user.entity';
 import { CreateUploadDto, CreateUploadInfoDto } from './dto/create-upload.dto';

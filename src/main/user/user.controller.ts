@@ -20,12 +20,12 @@ import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto, UpdateUserPasswordDto } from './dto/update-user.dto';
 import { UserService } from './user.service';
-import { SkipJwtPassport } from '../../decorator/skip-jwt-passport.decorator';
 import { PageQueryUserDto } from './dto/query-user.dto';
 import { JwtService } from '@nestjs/jwt';
 import { AppJwtRefreshAuthGuard } from '../../guard/jwt.refresh-passport.guard';
 import { ConfigService } from '@nestjs/config';
 import { Response as ResponseType } from 'express';
+import { IsJwtPublic } from '@/decorator/is-jwt-public.decorator';
 
 @ApiTags('系统用户相关接口')
 @Controller('user')
@@ -38,14 +38,14 @@ export class UserController {
     private readonly configService: ConfigService,
   ) {}
   @ApiOperation({ description: '', summary: '创建用户' })
-  @SkipJwtPassport()
+  @IsJwtPublic()
   @Post('/sign-up')
   signUp(@Body() createUserDto: CreateUserDto) {
     return this.userService.signUp(createUserDto);
   }
 
   @ApiOperation({ description: '', summary: '登录用户' })
-  @SkipJwtPassport()
+  @IsJwtPublic()
   @Post('/sign-in')
   @HttpCode(200)
   signIn(@Body() loginUserDto: CreateUserDto, @Request() req) {
@@ -59,7 +59,7 @@ export class UserController {
   }
 
   @ApiOperation({ description: '', summary: '用户列表查询' })
-  @SkipJwtPassport()
+  @IsJwtPublic()
   @Get('/list')
   findList(@Query() pageQueryDto: PageQueryUserDto) {
     return this.userService.findList(pageQueryDto);
@@ -158,13 +158,13 @@ export class UserController {
     },
   })
   @Post('github-auth')
-  @SkipJwtPassport()
+  @IsJwtPublic()
   authGithub(@Body('code') code: string, @Request() req) {
     return this.userService.authGithub(code, req);
   }
 
   @ApiOperation({ description: '', summary: '获取前 x 个月的用户注册量' })
-  @SkipJwtPassport()
+  @IsJwtPublic()
   @Post('/register-count')
   registerCount() {
     return this.userService.registerCount();
