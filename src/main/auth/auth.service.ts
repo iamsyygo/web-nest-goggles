@@ -14,6 +14,7 @@ import { SigninEmailDto, SigninUserNameDto, SignupDto } from './dto/create-auth.
 import { RedisService } from '../redis/redis.service';
 import { AppRedisKeyEnum } from '@/types/enum';
 import { ICaptcha } from './types/captcha';
+import { Request } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -28,18 +29,8 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async validateUser(username: string, pass: string): Promise<any> {
-    const user = await this.userService.findOne({ username });
-    if (!user) throw new BadRequestException('用户不存在');
-    const passwordMatch = await compare(pass, user.password);
-    if (!passwordMatch) throw new BadRequestException('密码错误');
-    const { password, ...result } = user;
-    password;
-    return result;
-  }
-
-  async signin(dto: SigninUserNameDto & SigninEmailDto) {
-    const { username, password, email, code } = dto;
+  async validateUser(username: string, pass: string, body: SigninEmailDto & SigninUserNameDto): Promise<any> {
+    const { email, code } = body;
     let user = null;
     if (email) {
       user = await this.userService.findOne({ email });
@@ -51,9 +42,14 @@ export class AuthService {
       user = await this.userService.findOne({ username });
       if (!user) throw new BadRequestException('用户不存在');
     }
-    const passwordMatch = await compare(password, user.password);
+    const passwordMatch = await compare(pass, user.password);
     if (!passwordMatch) throw new BadRequestException('密码错误');
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...result } = user;
+    return result;
+  }
 
+  async signin(user: Request['user']) {
     const payload = { username: user.username, sub: user.id };
     return {
       access_token: 'Bearer ' + this.getAccessToken(payload),
