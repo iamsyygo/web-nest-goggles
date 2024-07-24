@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
-import { UserService } from './user.service';
-import { UserController } from './user.controller';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './entities/user.entity';
-import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtAuthStrategy, JwtUseFactory } from '../../config/jwt.config';
+import { User } from './entities/user.entity';
+import { UserController } from './user.controller';
+import { UserService } from './user.service';
 
 @Module({
   imports: [
@@ -15,6 +15,7 @@ import { JwtAuthStrategy, JwtUseFactory } from '../../config/jwt.config';
       useFactory: JwtUseFactory,
     }),
   ],
+  exports: [UserService],
   controllers: [UserController],
   providers: [UserService, JwtAuthStrategy],
 })

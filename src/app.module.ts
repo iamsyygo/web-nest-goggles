@@ -12,9 +12,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { AppExceptionFilter } from '@/filter/exception.filter';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { AppResponseInterceptor } from '@/interceptor/response.interceptor';
-import { UserModule } from '@/main/user/user.module';
 import { UploadModule } from '@/main/upload/upload.module';
-import { AppJwtAuthGuard } from '@/guard/jwt-passport.guard';
 import { RoleModule } from '@/main/role/role.module';
 import { PermissionModule } from '@/main/permission/permission.module';
 import { EmailModule } from '@/main/email/email.module';
@@ -30,7 +28,7 @@ import { ConfigModule as SysConfigModule } from '@/main/sys-config/config.module
 // import { LoggerModule } from './main/logger/logger.module';
 import { LightweightCodeModule } from './main/lightweight-code/lightweight-code.module';
 import { AuthModule } from '@/main/auth/auth.module';
-import { UserModuleV2 } from './main/userv2/user.module';
+import { UserModule } from './main/user/user.module';
 import { JwtAuthGuard } from '@/guard/jwt-auth.guard';
 
 @Module({
@@ -68,7 +66,6 @@ import { JwtAuthGuard } from '@/guard/jwt-auth.guard';
     SysConfigModule,
     LightweightCodeModule,
     AuthModule,
-    UserModuleV2,
   ],
   controllers: [AppController],
   providers: [

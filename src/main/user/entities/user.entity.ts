@@ -1,35 +1,72 @@
 import { Column, DeleteDateColumn, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { DataSexEnum, DataStatusEnum } from '../../../types/enum';
-import { Role } from '../../role/entities/role.entity';
+import { DataSexEnum, DataStatusEnum } from '@/types/enum';
+import { Role } from '@/main/role/entities/role.entity';
 
-// platform 用户来源
 export enum PLATFORM_ENUM {
-  // 当前
   CURRENT,
-  // GitHub
   GITHUB,
 }
 
-// 示例：
-// https://juejin.cn/post/7100159206132547621?searchId=20240125143117C746E8C1354801836F0E#heading-5
-
-@Entity()
-// @Index(['username'], { unique: true }) // 设置唯一索引
+@Entity({})
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column({ unique: true, comment: '用户名', length: 100 })
+  username: string;
+
+  @Column({
+    type: 'varchar',
+    comment: '密码',
+  })
+  password: string;
+
+  @Column({ nullable: true, unique: true, comment: '邮箱' })
+  email: string;
+
+  @Column({
+    type: 'enum',
+    default: DataSexEnum.UNKNOWN,
+    enum: DataSexEnum,
+    comment: '性别',
+  })
+  sex: DataSexEnum;
+
+  @Column({
+    type: 'enum',
+    enum: PLATFORM_ENUM,
+    default: PLATFORM_ENUM.CURRENT,
+    comment: '用户来源(所属平台)',
+  })
+  platform: PLATFORM_ENUM;
+
+  @Column({
+    type: 'varchar',
+    length: 1000,
+    comment: '头像',
+    nullable: true,
+  })
+  avatar: string;
+
+  @Column({
+    type: 'varchar',
+    length: 100,
+    comment: '备注',
+    nullable: true,
+  })
+  comment: string;
+
   @Column({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',
-    comment: '注册时间',
+    comment: '创建时间',
     update: false,
   })
   createDate: Date;
 
   @Column({
     type: 'timestamp',
-    comment: '更新时间',
+    comment: '修改时间',
     onUpdate: 'CURRENT_TIMESTAMP',
     nullable: true,
     transformer: { from: (value: Date) => value, to: () => new Date() },
@@ -49,113 +86,8 @@ export class User {
     comment: '删除时间',
     nullable: true,
     default: null,
-    // transformer: { from: (value: Date) => value, to: () => new Date() },
   })
   deleteDate: Date;
-
-  @Column({
-    type: 'enum',
-    default: DataSexEnum.UNKNOWN,
-    enum: DataSexEnum,
-    comment: '性别',
-  })
-  gender: DataSexEnum;
-
-  @Column({
-    type: 'varchar',
-    length: 30,
-    comment: '用户名',
-    nullable: true,
-  })
-  username: string;
-
-  @Column({
-    type: 'varchar',
-    length: 80,
-    comment: '密码',
-    nullable: true,
-  })
-  password: string;
-
-  // fix: unable to read configuration file
-  // @BeforeInsert()
-  // async encryptPassword() {
-  //   if (!this.password) throw new Error('密码是空的');
-  //   this.password = await hashSync(this.password, YAML_DATA.bcrypt.salt);
-  // }
-
-  @Column({
-    type: 'varchar',
-    length: 30,
-    comment: '邮箱',
-    nullable: true,
-  })
-  email: string;
-
-  @Column({
-    type: 'varchar',
-    length: 30,
-    comment: '手机号码',
-    nullable: true,
-  })
-  phoneNumber: string;
-
-  @Column({
-    type: 'enum',
-    enum: PLATFORM_ENUM,
-    default: PLATFORM_ENUM.CURRENT,
-    comment: '用户来源(所属平台)，0: 当前，1: GitHub',
-  })
-  platform: PLATFORM_ENUM;
-
-  @Column({
-    type: 'varchar',
-    length: 30,
-    comment: '平台标识',
-    nullable: true,
-  })
-  platformId: string;
-
-  @Column({
-    type: 'varchar',
-    length: 30,
-    comment: '简介',
-    nullable: true,
-  })
-  bio: string;
-
-  @Column({
-    type: 'varchar',
-    length: 1000,
-    comment: '头像',
-    nullable: true,
-  })
-  avatar: string;
-
-  @Column({
-    type: 'varchar',
-    length: 50,
-    comment: '社交链接',
-    nullable: true,
-  })
-  socialLinks: string;
-
-  @Column({
-    type: 'varchar',
-    length: 30,
-    comment: '最后登录IP',
-    nullable: true,
-  })
-  lastLoginIp: string;
-
-  @Column({
-    type: 'timestamp',
-    onUpdate: 'CURRENT_TIMESTAMP',
-    transformer: { from: (value: Date) => value, to: () => new Date() },
-    nullable: true,
-    comment: '最后登录时间',
-  })
-  lastLoginDate: Date;
 
   @ManyToMany(() => Role)
   @JoinTable({

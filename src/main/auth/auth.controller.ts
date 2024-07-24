@@ -1,10 +1,9 @@
-import { Body, Controller, Get, HttpCode, Post, Request, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import { IsJwtPublic } from '@/decorator/is-jwt-public.decorator';
+import { LocalAuthGuard } from '@/guard/local-auth.guard';
+import { Body, Controller, HttpCode, Post, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
-import { LocalAuthGuard } from '@/guard/local-auth.guard';
-import { Request as Req } from 'express';
-import { SignupDto } from './dto/create-auth.dto';
+import { SigninEmailDto, SigninUserNameDto, SignupDto } from './dto/create-auth.dto';
 
 declare module 'express' {
   interface Request {
@@ -21,24 +20,27 @@ declare module 'express' {
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  // @UseGuards(AuthGuard('jwt'))
-  @Get()
-  findAll() {
-    return 'This action returns a auth';
-  }
-
   @ApiOperation({ description: '', summary: '登录用户' })
-  @UseGuards(LocalAuthGuard)
+  // @UseGuards(LocalAuthGuard)
   @Post('signin')
+  @IsJwtPublic()
   @HttpCode(200)
-  async signin(@Request() req: Req) {
-    return this.authService.signin(req.user);
+  async signin(@Body() dto: SigninUserNameDto & SigninEmailDto) {
+    return this.authService.signin(dto);
   }
 
   @ApiOperation({ description: '', summary: '注册用户' })
   @Post('signup')
   @HttpCode(201)
+  @IsJwtPublic()
   async signup(@Body() dto: SignupDto) {
     return this.authService.signup(dto);
+  }
+
+  @ApiOperation({ description: '', summary: '刷新令牌' })
+  @Post('refresh')
+  @IsJwtPublic()
+  async refreshToken(@Body('refreshToken') refreshToken: string) {
+    return this.authService.anewRefresh(refreshToken);
   }
 }

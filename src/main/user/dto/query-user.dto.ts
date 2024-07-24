@@ -1,6 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Matches, MaxLength, MinLength } from 'class-validator';
-import { User } from '../entities/user.entity';
 
 export class PageQueryUserDto {
   @ApiProperty({ description: '页码', example: 1 })
