@@ -81,5 +81,6 @@ type AppYamlConfig = {
     client_id: string;
     client_secret: string;
     access_token: string;
+    scope: string;
   };
 };

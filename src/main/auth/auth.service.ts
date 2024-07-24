@@ -15,6 +15,8 @@ import { RedisService } from '../redis/redis.service';
 import { AppRedisKeyEnum } from '@/types/enum';
 import { ICaptcha } from './types/captcha';
 import { Request } from 'express';
+import { PLATFORM_ENUM, User } from '../user/entities/user.entity';
+import { GithubUser } from './types/github';
 
 @Injectable()
 export class AuthService {
@@ -29,28 +31,28 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async validateUser(username: string, pass: string, body: SigninEmailDto & SigninUserNameDto): Promise<any> {
-    const { email, code } = body;
-    let user = null;
-    if (email) {
-      user = await this.userService.findOne({ email });
-      if (!user) throw new BadRequestException('用户不存在');
-      await this.onverifyCaptcha({ email, code });
-    }
-
-    if (username) {
-      user = await this.userService.findOne({ username });
-      if (!user) throw new BadRequestException('用户不存在');
-    }
+  async validateUser(username: string, pass: string): Promise<any> {
+    const user = await this.userService.findOne({ username });
+    if (!user) throw new BadRequestException('user not found');
     const passwordMatch = await compare(pass, user.password);
-    if (!passwordMatch) throw new BadRequestException('密码错误');
+    if (!passwordMatch) throw new BadRequestException('password not match');
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...result } = user;
     return result;
   }
 
   async signin(user: Request['user']) {
-    const payload = { username: user.username, sub: user.id };
+    const payload = { username: user.username, sub: user.id, platform: user.platform };
+    return {
+      access_token: 'Bearer ' + this.getAccessToken(payload),
+      refresh_token: 'Bearer ' + this.getRefreshToken(payload),
+    };
+  }
+  async signinOnEmail(dto: SigninEmailDto) {
+    const emailExist = await this.userService.findOne({ email: dto.email });
+    if (!emailExist) throw new BadRequestException('user not found');
+    await this.onverifyCaptcha(dto);
+    const payload = { username: emailExist.username, sub: emailExist.id, platform: emailExist.platform };
     return {
       access_token: 'Bearer ' + this.getAccessToken(payload),
       refresh_token: 'Bearer ' + this.getRefreshToken(payload),
@@ -63,9 +65,41 @@ export class AuthService {
     if (exist) throw new BadRequestException('用户已存在');
     const salt = this.configService.get('bcrypt.salt', 10);
     const pass = await hashSync(password, salt);
-    const user = await this.userService.create({ email, username, password: pass });
+    const user = await this.userService.create({
+      email,
+      username,
+      password: pass,
+      platform: PLATFORM_ENUM.LOCAL,
+    });
     if (!user) throw new BadRequestException('注册失败');
     return true;
+  }
+
+  async signinOnGithub(dto: GithubUser) {
+    const { id, emails } = dto;
+    const exist = await this.userService.findOne({ githubId: id, platform: PLATFORM_ENUM.GITHUB });
+    let user: User = exist;
+    if (!exist) {
+      const email = emails[0].value;
+      const emailUser = await this.userService.findOne({ email });
+      if (emailUser && id) {
+        await this.userService.upadate(emailUser.id, { githubId: id });
+        user = Object.assign(emailUser, { githubId: id });
+      } else if (id) {
+        user = await this.userService.create({ email, githubId: id, platform: PLATFORM_ENUM.GITHUB });
+      }
+      if (!user) throw new BadRequestException('注册失败');
+    }
+    const payload = {
+      githubId: user.githubId,
+      username: user.username,
+      sub: user.id,
+      platform: PLATFORM_ENUM.GITHUB,
+    };
+    return {
+      access_token: 'Bearer ' + this.getAccessToken(payload),
+      refresh_token: 'Bearer ' + this.getRefreshToken(payload),
+    };
   }
 
   async anewRefresh(refreshToken: string) {
@@ -83,7 +117,7 @@ export class AuthService {
     }
 
     const user = await this.userService.findOne(results.id);
-    const payload: IPayload = { username: user.username, sub: user.id };
+    const payload: IPayload = { username: user.username, sub: user.id, platform: user.platform };
     return {
       access_token: 'Bearer ' + this.getAccessToken(payload),
       refresh_token: 'Bearer ' + this.getRefreshToken(payload),

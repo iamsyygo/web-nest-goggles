@@ -176,9 +176,7 @@ export class MenuService {
       rids,
     });
     const menuData = await mrs.getMany();
-
     const { menus, pathMaps } = this.createMenuHierarchy(menuData);
-
     return { menus, paths: pathMaps };
   }
 

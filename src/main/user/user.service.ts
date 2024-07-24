@@ -1,12 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User as User } from './entities/user.entity';
+import { PLATFORM_ENUM, User as User } from './entities/user.entity';
 
 interface IFindDto {
   username?: string;
   email?: string;
   id?: number;
+  githubId?: string;
+  platform?:PLATFORM_ENUM
 }
 
 @Injectable()
@@ -20,6 +22,10 @@ export class UserService {
 
   create(dto: Partial<User>) {
     return this.userRepo.save(dto);
+  }
+
+  upadate(id: number, dto: Partial<User>) {
+    return this.userRepo.update(id, dto);
   }
 
   /**

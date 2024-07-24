@@ -3,7 +3,7 @@ import { DataSexEnum, DataStatusEnum } from '@/types/enum';
 import { Role } from '@/main/role/entities/role.entity';
 
 export enum PLATFORM_ENUM {
-  CURRENT,
+  LOCAL,
   GITHUB,
 }
 
@@ -35,7 +35,7 @@ export class User {
   @Column({
     type: 'enum',
     enum: PLATFORM_ENUM,
-    default: PLATFORM_ENUM.CURRENT,
+    default: PLATFORM_ENUM.LOCAL,
     comment: '用户来源(所属平台)',
   })
   platform: PLATFORM_ENUM;
@@ -47,6 +47,14 @@ export class User {
     nullable: true,
   })
   avatar: string;
+
+  @Column({
+    type: 'varchar',
+    length: 100,
+    comment: 'github id',
+    nullable: true,
+  })
+  githubId: string;
 
   @Column({
     type: 'varchar',

@@ -9,14 +9,13 @@ import { SigninEmailDto, SigninUserNameDto } from './dto/create-auth.dto';
 export class LocalStrategy extends PassportStrategy(Strategy) {
   constructor(private authService: AuthService) {
     super({
-      usernameField: 'username',
-      passwordField: 'password',
-      passReqToCallback: true,
+      // usernameField: 'username',
+      // passwordField: 'password',
+      // passReqToCallback: true,
     });
   }
-  async validate(request: Request, username: string, password: string): Promise<any> {
-    const body = request.body as SigninEmailDto & SigninUserNameDto;
-    const user = await this.authService.validateUser(username, password, body);
+  async validate( username: string, password: string): Promise<any> {
+    const user = await this.authService.validateUser(username, password, );
     if (!user) {
       throw new UnauthorizedException('身份验证失败');
     }
